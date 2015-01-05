@@ -1,0 +1,12 @@
+# msgpack4z-native
+
+[![Build Status](https://secure.travis-ci.org/msgpack4z/msgpack4z-native.png?branch=master)](http://travis-ci.org/msgpack4z/msgpack4z-native)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.xuwei-k/msgpack4z-native_2.11/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.xuwei-k/msgpack4z-native_2.11)
+[![javadoc](http://javadoc-badge.appspot.com/com.github.xuwei-k/msgpack4z-native_2.11.svg?label=javadoc)](http://javadoc-badge.appspot.com/com.github.xuwei-k/msgpack4z-native_2.11)
+
+- <http://msgpack.org/>
+- <https://github.com/msgpack/msgpack/blob/master/spec.md>
+
+```scala
+libraryDependencies += "com.github.xuwei-k" % "msgpack4z-native" % "0.1.0"
+```
