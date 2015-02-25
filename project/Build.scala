@@ -22,7 +22,7 @@ object build extends Build {
     commands += Command.command("updateReadme")(UpdateReadme.updateReadmeTask),
     libraryDependencies ++= (
       ("com.github.xuwei-k" % "msgpack4z-api" % "0.1.0") ::
-      ("org.scalacheck" %% "scalacheck" % "1.12.1" % "test") ::
+      ("org.scalacheck" %% "scalacheck" % "1.12.2" % "test") ::
       Nil
     ),
     ReleasePlugin.ReleaseKeys.releaseProcess := Seq[ReleaseStep](
