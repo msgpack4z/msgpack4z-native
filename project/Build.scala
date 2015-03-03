@@ -69,7 +69,7 @@ object build extends Build {
         "-doc-source-url", s"https://github.com/msgpack4z/msgpack4z-native/tree/${tag}€{FILE_PATH}.scala"
       )
     },
-    scalaVersion := "2.11.5",
+    scalaVersion := "2.11.6",
     crossScalaVersions := scalaVersion.value :: Nil,
     pomExtra :=
       <developers>
