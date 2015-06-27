@@ -2,6 +2,7 @@ import sbt._, Keys._
 import sbtrelease._
 import xerial.sbt.Sonatype._
 import ReleaseStateTransformations._
+import sbtrelease.ReleasePlugin.autoImport._
 import com.typesafe.sbt.pgp.PgpKeys
 
 object build extends Build {
@@ -15,7 +16,7 @@ object build extends Build {
   val modules = msgpack4zNativeName :: Nil
 
   lazy val msgpack4zNative = Project("msgpack4z-native", file(".")).settings(
-    ReleasePlugin.releaseSettings ++ ReleasePlugin.extraReleaseCommands ++ sonatypeSettings: _*
+    ReleasePlugin.extraReleaseCommands ++ sonatypeSettings: _*
   ).settings(
     name := msgpack4zNativeName,
     javacOptions in compile ++= Seq("-target", "6", "-source", "6"),
@@ -25,7 +26,7 @@ object build extends Build {
       ("org.scalacheck" %% "scalacheck" % "1.12.2" % "test") ::
       Nil
     ),
-    ReleasePlugin.ReleaseKeys.releaseProcess := Seq[ReleaseStep](
+    releaseProcess := Seq[ReleaseStep](
       ReleaseStep{ state =>
         assert(Sxr.disableSxr == false)
         state
