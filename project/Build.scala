@@ -21,6 +21,8 @@ object build extends Build {
     Nil
   )
 
+  private[this] val Scala211 = "2.11.7"
+
   lazy val msgpack4zNative = Project("msgpack4z-native", file(".")).settings(
     ReleasePlugin.extraReleaseCommands ++ sonatypeSettings: _*
   ).settings(
@@ -29,14 +31,10 @@ object build extends Build {
     commands += Command.command("updateReadme")(UpdateReadme.updateReadmeTask),
     libraryDependencies ++= (
       ("com.github.xuwei-k" % "msgpack4z-api" % "0.1.0") ::
-      ("org.scalacheck" %% "scalacheck" % "1.12.2" % "test") ::
+      ("org.scalacheck" %% "scalacheck" % "1.12.4" % "test") ::
       Nil
     ),
     releaseProcess := Seq[ReleaseStep](
-      ReleaseStep{ state =>
-        assert(Sxr.disableSxr == false)
-        state
-      },
       checkSnapshotDependencies,
       inquireVersions,
       runClean,
@@ -74,8 +72,8 @@ object build extends Build {
         "-doc-source-url", s"https://github.com/msgpack4z/msgpack4z-native/tree/${tag}€{FILE_PATH}.scala"
       )
     },
-    scalaVersion := "2.11.7",
-    crossScalaVersions := scalaVersion.value :: Nil,
+    scalaVersion := Scala211,
+    crossScalaVersions := Scala211 :: "2.12.0-M2" :: Nil,
     pomExtra :=
       <developers>
         <developer>
@@ -102,7 +100,7 @@ object build extends Build {
       new RuleTransformer(stripTestScope).transform(node)(0)
     }
   ).settings(
-    Sxr.subProjectSxr(Compile, "classes.sxr"): _*
+    Sxr.settings
   ).settings(
     Seq(Compile, Test).flatMap(c =>
       scalacOptions in (c, console) ~= {_.filterNot(unusedWarnings.toSet)}
