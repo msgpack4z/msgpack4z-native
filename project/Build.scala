@@ -15,6 +15,12 @@ object build extends Build {
 
   val modules = msgpack4zNativeName :: Nil
 
+  private[this] val unusedWarnings = (
+    "-Ywarn-unused" ::
+    "-Ywarn-unused-import" ::
+    Nil
+  )
+
   lazy val msgpack4zNative = Project("msgpack4z-native", file(".")).settings(
     ReleasePlugin.extraReleaseCommands ++ sonatypeSettings: _*
   ).settings(
@@ -60,12 +66,7 @@ object build extends Build {
       "-language:higherKinds" ::
       "-language:implicitConversions" ::
       Nil
-    ),
-    scalacOptions in compile ++= (
-      "-Ywarn-unused" ::
-      "-Ywarn-unused-import" ::
-      Nil
-    ),
+    ) ::: unusedWarnings,
     scalacOptions in (Compile, doc) ++= {
       val tag = if(isSnapshot.value) gitHash else { "v" + version.value }
       Seq(
@@ -102,6 +103,10 @@ object build extends Build {
     }
   ).settings(
     Sxr.subProjectSxr(Compile, "classes.sxr"): _*
+  ).settings(
+    Seq(Compile, Test).flatMap(c =>
+      scalacOptions in (c, console) ~= {_.filterNot(unusedWarnings.toSet)}
+    )
   )
 
 }
