@@ -23,15 +23,18 @@ object build extends Build {
 
   private[this] val Scala211 = "2.11.7"
 
+  val scalacheckVersion = SettingKey[String]("scalacheckVersion")
+
   lazy val msgpack4zNative = Project("msgpack4z-native", file(".")).settings(
     ReleasePlugin.extraReleaseCommands ++ sonatypeSettings: _*
   ).settings(
     name := msgpack4zNativeName,
     javacOptions in compile ++= Seq("-target", "6", "-source", "6"),
     commands += Command.command("updateReadme")(UpdateReadme.updateReadmeTask),
+    scalacheckVersion := "1.12.4",
     libraryDependencies ++= (
       ("com.github.xuwei-k" % "msgpack4z-api" % "0.1.0") ::
-      ("org.scalacheck" %% "scalacheck" % "1.12.4" % "test") ::
+      ("org.scalacheck" %% "scalacheck" % scalacheckVersion.value % "test") ::
       Nil
     ),
     releaseProcess := Seq[ReleaseStep](
