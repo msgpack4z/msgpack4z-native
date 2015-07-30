@@ -66,6 +66,7 @@ object build extends Build {
       "-language:existentials" ::
       "-language:higherKinds" ::
       "-language:implicitConversions" ::
+      "-Yno-adapted-args" ::
       Nil
     ) ::: unusedWarnings,
     scalacOptions in (Compile, doc) ++= {
