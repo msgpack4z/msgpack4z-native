@@ -31,7 +31,7 @@ object build extends Build {
     name := msgpack4zNativeName,
     javacOptions in compile ++= Seq("-target", "6", "-source", "6"),
     commands += Command.command("updateReadme")(UpdateReadme.updateReadmeTask),
-    scalacheckVersion := "1.12.4",
+    scalacheckVersion := "1.12.5",
     libraryDependencies ++= (
       ("com.github.xuwei-k" % "msgpack4z-api" % "0.1.0") ::
       ("org.scalacheck" %% "scalacheck" % scalacheckVersion.value % "test") ::
