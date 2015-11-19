@@ -6,6 +6,14 @@ import org.scalacheck.{Prop, Properties}
 
 object Test extends Properties("test") {
 
+  property("ExtTypeHeader") = Prop.forAll { (tpe: Byte, size: Int) =>
+    val out = MsgOutBuffer.create()
+    out.packExtTypeHeader(tpe, size)
+    val bytes = out.result
+    val header = MsgInBuffer(bytes).unpackExtTypeHeader()
+    (header.getType == tpe) && (header.getLength == size)
+  }
+
   property("MapHeader") = Prop.forAll { size: Int =>
     val out = MsgOutBuffer.create()
     out.packMapHeader(size)

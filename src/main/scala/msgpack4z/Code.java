@@ -149,7 +149,7 @@ final class Code {
             case Code.EXT8:
             case Code.EXT16:
             case Code.EXT32:
-                return MsgType.EXTENDED;
+                return MsgType.EXTENSION;
 
             default:
                 return null;

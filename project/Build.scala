@@ -35,7 +35,7 @@ object build extends Build {
     commands += Command.command("updateReadme")(UpdateReadme.updateReadmeTask),
     scalacheckVersion := "1.12.5",
     libraryDependencies ++= (
-      ("com.github.xuwei-k" % "msgpack4z-api" % "0.1.0") ::
+      ("com.github.xuwei-k" % "msgpack4z-api" % "0.2.0") ::
       ("org.scalacheck" %% "scalacheck" % scalacheckVersion.value % "test") ::
       Nil
     ),

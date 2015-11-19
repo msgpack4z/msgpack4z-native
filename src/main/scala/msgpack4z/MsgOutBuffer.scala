@@ -220,6 +220,41 @@ final class MsgOutBuffer private(arrayBuffer: ByteArrayOutputStream, buf: DataOu
   override def arrayEnd(): Unit = {
     // do nothing
   }
+
+  override def writePayload(a: Array[Byte]): Unit = {
+    buf.write(a)
+  }
+
+  override def packExtTypeHeader(extType: Byte, payloadLen: Int): Unit = {
+    if (0 <= payloadLen) {
+      if (payloadLen < (1 << 8)) {
+        (payloadLen: @annotation.switch) match {
+          case 1 =>
+            writeByteAndByte(0xd4.asInstanceOf[Byte], extType);
+          case 2 =>
+            writeByteAndByte(0xd5.asInstanceOf[Byte], extType)
+          case 4 =>
+            writeByteAndByte(0xd6.asInstanceOf[Byte], extType)
+          case 8 =>
+            writeByteAndByte(0xd7.asInstanceOf[Byte], extType)
+          case 16 =>
+            writeByteAndByte(0xd8.asInstanceOf[Byte], extType)
+          case _ =>
+            writeByteAndByte(0xc7.asInstanceOf[Byte], payloadLen.asInstanceOf[Byte])
+            buf.writeByte(extType);
+        }
+      } else if (payloadLen < (1 << 16)) {
+        writeByteAndShort(0xc8.asInstanceOf[Byte], payloadLen.asInstanceOf[Short])
+        buf.writeByte(extType)
+      } else {
+        writeByteAndInt(0xc9.asInstanceOf[Byte], payloadLen)
+        buf.writeByte(extType)
+      }
+    } else {
+      writeByteAndInt(0xc9.asInstanceOf[Byte], payloadLen)
+      buf.writeByte(extType)
+    }
+  }
 }
 
 object MsgOutBuffer {

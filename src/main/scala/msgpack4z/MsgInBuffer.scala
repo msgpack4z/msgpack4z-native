@@ -468,4 +468,44 @@ final class MsgInBuffer(buf: DataInputStream) extends MsgUnpacker{
   override def unpackMapHeader(): Int = {
     unpackMapHeaderOpt.get
   }
+
+  override def readPayload(length: Int): Array[Byte] = {
+    val array = new Array[Byte](length)
+    buf.read(array)
+    array
+  }
+
+  override def readPayload(a: Array[Byte]): Unit = {
+    buf.read(a)
+  }
+
+  override def unpackExtTypeHeader(): ExtTypeHeader = {
+    buf.readByte() match {
+      case Code.FIXEXT1 =>
+        new ExtTypeHeader(buf.readByte(), 1)
+      case Code.FIXEXT2 =>
+        new ExtTypeHeader(buf.readByte(), 2)
+      case Code.FIXEXT4 =>
+        new ExtTypeHeader(buf.readByte(), 4)
+      case Code.FIXEXT8 =>
+        new ExtTypeHeader(buf.readByte(), 8)
+      case Code.FIXEXT16 =>
+        new ExtTypeHeader(buf.readByte(), 16)
+      case Code.EXT8 =>
+        val length = buf.readByte() & 0xff
+        val tpe = buf.readByte()
+        new ExtTypeHeader(tpe, length)
+      case Code.EXT16 =>
+        val length = buf.readShort() & 0xffff
+        val tpe = buf.readByte()
+        new ExtTypeHeader(tpe, length)
+      case Code.EXT32 =>
+        val length = buf.readInt()
+        val tpe = buf.readByte()
+        new ExtTypeHeader(tpe, length)
+      case other =>
+        sys.error("unexpected type " + other)
+    }
+  }
+
 }
