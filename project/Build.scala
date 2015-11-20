@@ -29,6 +29,7 @@ object build extends Build {
     ReleasePlugin.extraReleaseCommands ++ sonatypeSettings: _*
   ).settings(
     name := msgpack4zNativeName,
+    fullResolvers ~= {_.filterNot(_.name == "jcenter")},
     javacOptions in compile ++= Seq("-target", "6", "-source", "6"),
     commands += Command.command("updateReadme")(UpdateReadme.updateReadmeTask),
     scalacheckVersion := "1.12.5",

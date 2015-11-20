@@ -12,3 +12,5 @@ scalacOptions ++= (
   "-Yno-adapted-args" ::
   Nil
 )
+
+fullResolvers ~= {_.filterNot(_.name == "jcenter")}
