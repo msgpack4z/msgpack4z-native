@@ -2,18 +2,18 @@ package msgpack4z
 
 import java.math.BigInteger
 
-import org.scalacheck.{Gen, Prop, Properties}
+import org.scalacheck.{Prop, Properties}
 
 object Test extends Properties("test") {
 
-  property("MapHeader") = Prop.forAll(Gen.posNum[Int]) { size =>
+  property("MapHeader") = Prop.forAll { size: Int =>
     val out = MsgOutBuffer.create()
     out.packMapHeader(size)
     val bytes = out.result
     MsgInBuffer(bytes).unpackMapHeader() == size
   }
 
-  property("ArrayHeader") = Prop.forAll(Gen.posNum[Int]) { size =>
+  property("ArrayHeader") = Prop.forAll { size: Int =>
     val out = MsgOutBuffer.create()
     out.packArrayHeader(size)
     val bytes = out.result

@@ -148,14 +148,14 @@ final class MsgOutBuffer private(arrayBuffer: ByteArrayOutputStream, buf: DataOu
   }
 
   override def packArrayHeader(size: Int): Unit = {
-    if(size < 0){
-      throw new IllegalArgumentException("array size must be >= 0")
-    }
-
-    if(size < (1 << 4)) {
-      buf.writeByte((Code.FIXARRAY_PREFIX | size).asInstanceOf[Byte])
-    } else if(size < (1 << 16)) {
-      writeByteAndShort(Code.ARRAY16, size.asInstanceOf[Short])
+    if(0 <= size) {
+      if(size < (1 << 4)) {
+        buf.writeByte((Code.FIXARRAY_PREFIX | size).asInstanceOf[Byte])
+      } else if(size < (1 << 16)) {
+        writeByteAndShort(Code.ARRAY16, size.asInstanceOf[Short])
+      } else {
+        writeByteAndInt(Code.ARRAY32, size)
+      }
     } else {
       writeByteAndInt(Code.ARRAY32, size)
     }
@@ -182,14 +182,14 @@ final class MsgOutBuffer private(arrayBuffer: ByteArrayOutputStream, buf: DataOu
   }
 
   override def packMapHeader(size: Int): Unit = {
-    if(size < 0){
-      throw new IllegalArgumentException("map size must be >= 0")
-    }
-
-    if(size < (1 << 4)) {
-      buf.writeByte((Code.FIXMAP_PREFIX | size).asInstanceOf[Byte])
-    } else if(size < (1 << 16)) {
-      writeByteAndShort(Code.MAP16, size.asInstanceOf[Short])
+    if(0 <= size) {
+      if (size < (1 << 4)) {
+        buf.writeByte((Code.FIXMAP_PREFIX | size).asInstanceOf[Byte])
+      } else if (size < (1 << 16)) {
+        writeByteAndShort(Code.MAP16, size.asInstanceOf[Short])
+      } else {
+        writeByteAndInt(Code.MAP32, size)
+      }
     } else {
       writeByteAndInt(Code.MAP32, size)
     }

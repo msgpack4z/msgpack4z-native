@@ -305,7 +305,7 @@ final class MsgInBuffer(buf: DataInputStream) extends MsgUnpacker{
         case Code.ARRAY16 =>
           OptInt(readNextLength16)
         case Code.ARRAY32 =>
-          readNextLength32
+          OptInt(buf.readInt)
         case _ =>
           OptInt.empty
       }
@@ -321,7 +321,7 @@ final class MsgInBuffer(buf: DataInputStream) extends MsgUnpacker{
         case Code.MAP16 =>
           OptInt(readNextLength16)
         case Code.MAP32 =>
-          readNextLength32
+          OptInt(buf.readInt)
         case _ =>
           OptInt.empty
       }
