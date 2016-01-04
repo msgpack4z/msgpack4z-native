@@ -27,7 +27,7 @@ final class Code {
     }
 
     public static boolean isFixedMap(byte b) {
-        return (b & (byte) 0xe0) == Code.FIXMAP_PREFIX;
+        return (b & (byte) 0xf0) == Code.FIXMAP_PREFIX;
     }
 
     public static boolean isFixedRaw(byte b) {
