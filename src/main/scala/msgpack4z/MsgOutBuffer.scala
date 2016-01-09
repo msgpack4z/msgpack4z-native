@@ -1,51 +1,69 @@
 package msgpack4z
 
-import java.io.{DataOutputStream, ByteArrayOutputStream}
+import java.io.ByteArrayOutputStream
 import java.math.BigInteger
 
-final class MsgOutBuffer private(arrayBuffer: ByteArrayOutputStream, buf: DataOutputStream) extends MsgPacker{
+final class MsgOutBuffer private(buf: ByteArrayOutputStream) extends MsgPacker{
 
   override def result(): Array[Byte] = {
-    buf.close()
-    arrayBuffer.toByteArray
+    buf.toByteArray
   }
 
   private[msgpack4z] def writeByteAndShort(b: Byte, sh: Short): Unit = {
-    buf.writeByte(b)
-    buf.writeShort(sh)
+    buf.write(b)
+    buf.write((sh >>> 8) & 0xFF)
+    buf.write((sh >>> 0) & 0xFF)
   }
 
   private[this] def writeByteAndByte(b: Byte, b1: Byte): Unit = {
-    buf.writeByte(b)
-    buf.writeByte(b1)
+    buf.write(b)
+    buf.write(b1)
+  }
+
+  private[this] def writeInt(l: Int): Unit = {
+    buf.write((l >>> 24).asInstanceOf[Byte])
+    buf.write((l >>> 16).asInstanceOf[Byte])
+    buf.write((l >>> 8).asInstanceOf[Byte])
+    buf.write(l.asInstanceOf[Byte])
+  }
+
+  private[this] def writeLong(l: Long): Unit = {
+    buf.write((l >>> 56).asInstanceOf[Byte])
+    buf.write((l >>> 48).asInstanceOf[Byte])
+    buf.write((l >>> 40).asInstanceOf[Byte])
+    buf.write((l >>> 32).asInstanceOf[Byte])
+    buf.write((l >>> 24).asInstanceOf[Byte])
+    buf.write((l >>> 16).asInstanceOf[Byte])
+    buf.write((l >>> 8).asInstanceOf[Byte])
+    buf.write(l.asInstanceOf[Byte])
   }
 
   private[msgpack4z] def writeByteAndInt(b: Byte, i: Int): Unit = {
-    buf.writeByte(b)
-    buf.writeInt(i)
+    buf.write(b)
+    writeInt(i)
   }
 
   private[msgpack4z] def writeByteAndLong(b: Byte, l: Long): Unit = {
-    buf.writeByte(b)
-    buf.writeLong(l)
+    buf.write(b)
+    writeLong(l)
   }
 
   private[this] def writeByteAndFloat(b: Byte, f: Float): Unit = {
-    buf.writeByte(b)
-    buf.writeFloat(f)
+    buf.write(b)
+    writeInt(java.lang.Float.floatToIntBits(f))
   }
 
   private[this] def writeByteAndDouble(b: Byte, d: Double) = {
-    buf.writeByte(b)
-    buf.writeDouble(d)
+    buf.write(b)
+    writeLong(java.lang.Double.doubleToLongBits(d))
   }
 
   override def packByte(b: Byte): Unit = {
     if (b < -(1 << 5)) {
-      buf.writeByte(Code.INT8)
-      buf.writeByte(b)
+      buf.write(Code.INT8)
+      buf.write(b)
     } else {
-      buf.writeByte(b)
+      buf.write(b)
     }
   }
 
@@ -57,7 +75,7 @@ final class MsgOutBuffer private(arrayBuffer: ByteArrayOutputStream, buf: DataOu
         writeByteAndByte(Code.INT8, v.asInstanceOf[Byte])
       }
     } else if (v < (1 << 7)) {
-      buf.writeByte(v.asInstanceOf[Byte])
+      buf.write(v.asInstanceOf[Byte])
     } else {
       if (v < (1 << 8)) {
         writeByteAndByte(Code.UINT8, v.asInstanceOf[Byte])
@@ -78,7 +96,7 @@ final class MsgOutBuffer private(arrayBuffer: ByteArrayOutputStream, buf: DataOu
         writeByteAndByte(Code.INT8, r.asInstanceOf[Byte])
       }
     } else if (r < (1 << 7)) {
-      buf.writeByte(r.asInstanceOf[Byte])
+      buf.write(r.asInstanceOf[Byte])
     } else {
       if (r < (1 << 8)) {
         writeByteAndByte(Code.UINT8, r.asInstanceOf[Byte])
@@ -107,7 +125,7 @@ final class MsgOutBuffer private(arrayBuffer: ByteArrayOutputStream, buf: DataOu
         }
       }
     } else if (v < (1 << 7)) {
-      buf.writeByte(v.asInstanceOf[Byte])
+      buf.write(v.asInstanceOf[Byte])
     } else {
       if (v < (1L << 16)) {
         if (v < (1 << 8)) {
@@ -150,7 +168,7 @@ final class MsgOutBuffer private(arrayBuffer: ByteArrayOutputStream, buf: DataOu
   override def packArrayHeader(size: Int): Unit = {
     if(0 <= size) {
       if(size < (1 << 4)) {
-        buf.writeByte((Code.FIXARRAY_PREFIX | size).asInstanceOf[Byte])
+        buf.write((Code.FIXARRAY_PREFIX | size).asInstanceOf[Byte])
       } else if(size < (1 << 16)) {
         writeByteAndShort(Code.ARRAY16, size.asInstanceOf[Short])
       } else {
@@ -174,7 +192,7 @@ final class MsgOutBuffer private(arrayBuffer: ByteArrayOutputStream, buf: DataOu
   }
 
   override def packNil(): Unit = {
-    buf.writeByte(Code.NIL)
+    buf.write(Code.NIL)
   }
 
   override def mapEnd(): Unit = {
@@ -184,7 +202,7 @@ final class MsgOutBuffer private(arrayBuffer: ByteArrayOutputStream, buf: DataOu
   override def packMapHeader(size: Int): Unit = {
     if(0 <= size) {
       if (size < (1 << 4)) {
-        buf.writeByte((Code.FIXMAP_PREFIX | size).asInstanceOf[Byte])
+        buf.write((Code.FIXMAP_PREFIX | size).asInstanceOf[Byte])
       } else if (size < (1 << 16)) {
         writeByteAndShort(Code.MAP16, size.asInstanceOf[Short])
       } else {
@@ -196,12 +214,12 @@ final class MsgOutBuffer private(arrayBuffer: ByteArrayOutputStream, buf: DataOu
   }
 
   override def packBoolean(a: Boolean): Unit = {
-    buf.writeByte(if(a) Code.TRUE else Code.FALSE)
+    buf.write(if(a) Code.TRUE else Code.FALSE)
   }
 
   private[this] def writeStringHeader(len: Int): Unit = {
     if(len < (1 << 5)) {
-      buf.writeByte((Code.FIXSTR_PREFIX | len).asInstanceOf[Byte])
+      buf.write((Code.FIXSTR_PREFIX | len).asInstanceOf[Byte])
     } else if(len < (1 << 8)) {
       writeByteAndByte(Code.STR8, len.asInstanceOf[Byte])
     } else if(len < (1 << 16)) {
@@ -241,18 +259,18 @@ final class MsgOutBuffer private(arrayBuffer: ByteArrayOutputStream, buf: DataOu
             writeByteAndByte(0xd8.asInstanceOf[Byte], extType)
           case _ =>
             writeByteAndByte(0xc7.asInstanceOf[Byte], payloadLen.asInstanceOf[Byte])
-            buf.writeByte(extType);
+            buf.write(extType);
         }
       } else if (payloadLen < (1 << 16)) {
         writeByteAndShort(0xc8.asInstanceOf[Byte], payloadLen.asInstanceOf[Short])
-        buf.writeByte(extType)
+        buf.write(extType)
       } else {
         writeByteAndInt(0xc9.asInstanceOf[Byte], payloadLen)
-        buf.writeByte(extType)
+        buf.write(extType)
       }
     } else {
       writeByteAndInt(0xc9.asInstanceOf[Byte], payloadLen)
-      buf.writeByte(extType)
+      buf.write(extType)
     }
   }
 }
@@ -260,7 +278,6 @@ final class MsgOutBuffer private(arrayBuffer: ByteArrayOutputStream, buf: DataOu
 object MsgOutBuffer {
   def create(): MsgOutBuffer = {
     val out = new ByteArrayOutputStream()
-    val data = new DataOutputStream(out)
-    new MsgOutBuffer(out, data)
+    new MsgOutBuffer(out)
   }
 }
