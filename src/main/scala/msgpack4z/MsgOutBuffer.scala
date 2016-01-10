@@ -5,7 +5,7 @@ import java.math.BigInteger
 
 final class MsgOutBuffer private(arrayBuffer: ByteArrayOutputStream, buf: DataOutputStream) extends MsgPacker{
 
-  override def result: Array[Byte] = {
+  override def result(): Array[Byte] = {
     buf.close()
     arrayBuffer.toByteArray
   }

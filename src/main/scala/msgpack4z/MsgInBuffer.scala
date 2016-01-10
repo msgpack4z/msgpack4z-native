@@ -21,7 +21,7 @@ final class MsgInBuffer(buf: DataInputStream) extends MsgUnpacker{
     buf.readByte() == Code.NIL
   }
 
-  def unpackBooleanOpt: OptBool = {
+  def unpackBooleanOpt(): OptBool = {
     buf.readByte match{
       case Code.TRUE =>
         OptBool.True
@@ -32,7 +32,7 @@ final class MsgInBuffer(buf: DataInputStream) extends MsgUnpacker{
     }
   }
 
-  def unpackByteOpt: OptByte = {
+  def unpackByteOpt(): OptByte = {
     val b = buf.readByte
     if (Code.isFixInt(b)) {
       OptByte(b)
@@ -95,7 +95,7 @@ final class MsgInBuffer(buf: DataInputStream) extends MsgUnpacker{
     }
   }
 
-  def unpackShortOpt: OptShort = {
+  def unpackShortOpt(): OptShort = {
     val b = buf.readByte
     if (Code.isFixInt(b)) {
       OptShort(b)
@@ -150,7 +150,7 @@ final class MsgInBuffer(buf: DataInputStream) extends MsgUnpacker{
     }
   }
 
-  def unpackIntOpt: OptInt = {
+  def unpackIntOpt(): OptInt = {
     val b = buf.readByte
     if (Code.isFixInt(b)) {
       OptInt(b)
@@ -195,7 +195,7 @@ final class MsgInBuffer(buf: DataInputStream) extends MsgUnpacker{
     }
   }
 
-  override def unpackLong: Long = {
+  override def unpackLong(): Long = {
     val b = buf.readByte
     if (Code.isFixInt(b)) {
       b
@@ -233,7 +233,7 @@ final class MsgInBuffer(buf: DataInputStream) extends MsgUnpacker{
     }
   }
 
-  override def unpackBigInteger: BigInteger = {
+  override def unpackBigInteger(): BigInteger = {
     val b = buf.readByte
     if (Code.isFixInt(b)) {
       BigInteger.valueOf(b)
@@ -276,7 +276,7 @@ final class MsgInBuffer(buf: DataInputStream) extends MsgUnpacker{
     }
   }
 
-  override def unpackFloat: Float = {
+  override def unpackFloat(): Float = {
     val b = buf.readByte
     b match {
       case Code.FLOAT32 =>
@@ -286,7 +286,7 @@ final class MsgInBuffer(buf: DataInputStream) extends MsgUnpacker{
     }
   }
 
-  override def unpackDouble: Double = {
+  override def unpackDouble(): Double = {
     val b = buf.readByte
     b match {
       case Code.FLOAT32 =>
@@ -296,7 +296,7 @@ final class MsgInBuffer(buf: DataInputStream) extends MsgUnpacker{
     }
   }
 
-  def unpackArrayHeaderOpt: OptInt = {
+  def unpackArrayHeaderOpt(): OptInt = {
     val b = buf.readByte()
     if(Code.isFixedArray(b)){
       OptInt(b & 0x0f)
@@ -312,7 +312,7 @@ final class MsgInBuffer(buf: DataInputStream) extends MsgUnpacker{
     }
   }
 
-  def unpackMapHeaderOpt: OptInt = {
+  def unpackMapHeaderOpt(): OptInt = {
     val b = buf.readByte()
     if(Code.isFixedMap(b)){
       OptInt(b & 0x0f)
@@ -342,7 +342,7 @@ final class MsgInBuffer(buf: DataInputStream) extends MsgUnpacker{
   }
 
 
-  def unpackRawStringHeader: OptInt = {
+  def unpackRawStringHeader(): OptInt = {
     val b = buf.readByte()
     if(Code.isFixedRaw(b)){
       OptInt(b & 0x1f)
@@ -351,13 +351,13 @@ final class MsgInBuffer(buf: DataInputStream) extends MsgUnpacker{
     }
   }
 
-  private[this] def readNextLength8: Int =
+  private[this] def readNextLength8(): Int =
     buf.readByte() & 0xff
 
-  private[this] def readNextLength16: Int =
+  private[this] def readNextLength16(): Int =
     buf.readShort() & 0xffff
 
-  private[this] def readNextLength32: OptInt = {
+  private[this] def readNextLength32(): OptInt = {
     val u32 = buf.readInt()
     if(u32 < 0) {
       OptInt.empty
