@@ -36,7 +36,7 @@ object Test extends Properties("test") {
     MsgInBuffer(bytes).unpackShort == a
     MsgInBuffer(bytes).unpackInt == a
     MsgInBuffer(bytes).unpackLong == a
-    MsgInBuffer(bytes).unpackBigInteger == new BigInteger(a.toString)
+    MsgInBuffer(bytes).unpackBigInteger == BigInteger.valueOf(a)
   }
 
   property("short") = Prop.forAll { a: Short =>
@@ -46,7 +46,7 @@ object Test extends Properties("test") {
     MsgInBuffer(bytes).unpackShort == a
     MsgInBuffer(bytes).unpackInt == a
     MsgInBuffer(bytes).unpackLong == a
-    MsgInBuffer(bytes).unpackBigInteger == new BigInteger(a.toString)
+    MsgInBuffer(bytes).unpackBigInteger == BigInteger.valueOf(a)
   }
 
   property("int") = Prop.forAll { a: Int =>
@@ -55,7 +55,7 @@ object Test extends Properties("test") {
     val bytes = out.result()
     MsgInBuffer(bytes).unpackInt == a
     MsgInBuffer(bytes).unpackLong == a
-    MsgInBuffer(bytes).unpackBigInteger == new BigInteger(a.toString)
+    MsgInBuffer(bytes).unpackBigInteger == BigInteger.valueOf(a)
   }
 
   property("long") = Prop.forAll { a: Long =>
@@ -63,7 +63,7 @@ object Test extends Properties("test") {
     out.packLong(a)
     val bytes = out.result()
     MsgInBuffer(bytes).unpackLong == a
-    MsgInBuffer(bytes).unpackBigInteger == new BigInteger(a.toString)
+    MsgInBuffer(bytes).unpackBigInteger == BigInteger.valueOf(a)
   }
 
   property("double") = Prop.forAll { a: Double =>
