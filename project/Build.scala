@@ -21,7 +21,7 @@ object build extends Build {
     Nil
   )
 
-  private[this] val Scala211 = "2.11.7"
+  private[this] val Scala211 = "2.11.8"
 
   val scalacheckVersion = SettingKey[String]("scalacheckVersion")
 
