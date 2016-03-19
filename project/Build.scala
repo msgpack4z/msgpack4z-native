@@ -7,9 +7,15 @@ import com.typesafe.sbt.pgp.PgpKeys
 
 object build extends Build {
 
-  private def gitHash: String = scala.util.Try(
-    sys.process.Process("git rev-parse HEAD").lines_!.head
-  ).getOrElse("master")
+  private[this] val tagName = Def.setting{
+    s"v${if (releaseUseGlobalVersion.value) (version in ThisBuild).value else version.value}"
+  }
+
+  private[this] val tagOrHash = Def.setting{
+    if(isSnapshot.value) gitHash() else tagName.value
+  }
+
+  private[this] def gitHash(): String = sys.process.Process("git rev-parse HEAD").lines_!.head
 
   private val msgpack4zNativeName = "msgpack4z-native"
 
@@ -39,6 +45,7 @@ object build extends Build {
       ("org.scalacheck" %% "scalacheck" % scalacheckVersion.value % "test") ::
       Nil
     ),
+    releaseTagName := tagName.value,
     releaseProcess := Seq[ReleaseStep](
       checkSnapshotDependencies,
       inquireVersions,
@@ -72,7 +79,7 @@ object build extends Build {
       Nil
     ) ::: unusedWarnings,
     scalacOptions in (Compile, doc) ++= {
-      val tag = if(isSnapshot.value) gitHash else { "v" + version.value }
+      val tag = tagOrHash.value
       Seq(
         "-sourcepath", (baseDirectory in LocalRootProject).value.getAbsolutePath,
         "-doc-source-url", s"https://github.com/msgpack4z/msgpack4z-native/tree/${tag}€{FILE_PATH}.scala"
@@ -91,7 +98,7 @@ object build extends Build {
       <scm>
         <url>git@github.com:msgpack4z/msgpack4z-native.git</url>
         <connection>scm:git:git@github.com:msgpack4z/msgpack4z-native.git</connection>
-        <tag>{if(isSnapshot.value) gitHash else { "v" + version.value }}</tag>
+        <tag>{tagOrHash.value}</tag>
       </scm>
     ,
     description := "msgpack4z",
