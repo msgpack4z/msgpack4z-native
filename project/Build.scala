@@ -4,6 +4,9 @@ import xerial.sbt.Sonatype._
 import ReleaseStateTransformations._
 import sbtrelease.ReleasePlugin.autoImport._
 import com.typesafe.sbt.pgp.PgpKeys
+import org.scalajs.sbtplugin.cross.CrossProject
+import org.scalajs.sbtplugin.ScalaJSPlugin
+import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
 
 object build extends Build {
 
@@ -31,18 +34,20 @@ object build extends Build {
 
   val scalacheckVersion = SettingKey[String]("scalacheckVersion")
 
-  lazy val msgpack4zNative = Project("msgpack4z-native", file(".")).settings(
-    ReleasePlugin.extraReleaseCommands ++ sonatypeSettings: _*
+  lazy val commonSettings = ReleasePlugin.extraReleaseCommands ++ Seq(
+    commands += Command.command("updateReadme")(UpdateReadme.updateReadmeTask)
+  )
+
+  lazy val msgpack4zNative = CrossProject("msgpack4z-native", file("."), CustomCrossType).settings(
+    commonSettings ++ sonatypeSettings : _*
   ).settings(
     name := msgpack4zNativeName,
     resolvers += Opts.resolver.sonatypeReleases,
     fullResolvers ~= {_.filterNot(_.name == "jcenter")},
     javacOptions in compile ++= Seq("-target", "6", "-source", "6"),
-    commands += Command.command("updateReadme")(UpdateReadme.updateReadmeTask),
     scalacheckVersion := "1.12.5",
     libraryDependencies ++= (
-      ("com.github.xuwei-k" % "msgpack4z-api" % "0.2.0") ::
-      ("org.scalacheck" %% "scalacheck" % scalacheckVersion.value % "test") ::
+      ("org.scalacheck" %%% "scalacheck" % scalacheckVersion.value % "test") ::
       Nil
     ),
     releaseTagName := tagName.value,
@@ -112,12 +117,43 @@ object build extends Build {
       val stripTestScope = stripIf { n => n.label == "dependency" && (n \ "scope").text == "test" }
       new RuleTransformer(stripTestScope).transform(node)(0)
     }
-  ).settings(
-    Sxr.settings
+  ).jvmSettings(
+    Sxr.settings : _*
   ).settings(
     Seq(Compile, Test).flatMap(c =>
       scalacOptions in (c, console) ~= {_.filterNot(unusedWarnings.toSet)}
+    ) : _*
+  ).jvmSettings(
+    libraryDependencies ++= (
+      ("com.github.xuwei-k" % "msgpack4z-api" % "0.2.0") ::
+      Nil
     )
+  ).jsSettings(
+    scalacOptions += {
+      val a = (baseDirectory in LocalRootProject).value.toURI.toString
+      val g = "https://raw.githubusercontent.com/msgpack4z/msgpack4z-native/" + tagOrHash.value
+      s"-P:scalajs:mapSourceURI:$a->$g/"
+    }
+  )
+
+  lazy val msgpack4zNativeJVM = msgpack4zNative.jvm
+
+  lazy val msgpack4zNativeJS = msgpack4zNative.js
+
+  lazy val root = Project(
+    "root", file(".")
+  ).settings(
+    commonSettings : _*
+  ).settings(
+    scalaSource in Compile := file("dummy"),
+    scalaSource in Test := file("dummy"),
+    PgpKeys.publishSigned := {},
+    PgpKeys.publishLocalSigned := {},
+    publishLocal := {},
+    publishArtifact in Compile := false,
+    publish := {}
+  ).aggregate(
+    msgpack4zNativeJVM, msgpack4zNativeJS
   )
 
 }
