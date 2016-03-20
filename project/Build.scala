@@ -35,6 +35,7 @@ object build extends Build {
   val scalacheckVersion = SettingKey[String]("scalacheckVersion")
 
   lazy val commonSettings = ReleasePlugin.extraReleaseCommands ++ Seq(
+    crossScalaVersions := Scala211 :: "2.12.0-M3" :: Nil,
     commands += Command.command("updateReadme")(UpdateReadme.updateReadmeTask)
   )
 
@@ -91,7 +92,6 @@ object build extends Build {
       )
     },
     scalaVersion := Scala211,
-    crossScalaVersions := Scala211 :: "2.12.0-M3" :: Nil,
     pomExtra :=
       <developers>
         <developer>
