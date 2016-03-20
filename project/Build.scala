@@ -36,21 +36,11 @@ object build extends Build {
 
   lazy val commonSettings = ReleasePlugin.extraReleaseCommands ++ Seq(
     crossScalaVersions := Scala211 :: "2.12.0-M3" :: Nil,
-    commands += Command.command("updateReadme")(UpdateReadme.updateReadmeTask)
-  )
-
-  lazy val msgpack4zNative = CrossProject("msgpack4z-native", file("."), CustomCrossType).settings(
-    commonSettings ++ sonatypeSettings : _*
-  ).settings(
-    name := msgpack4zNativeName,
+    commands += Command.command("updateReadme")(UpdateReadme.updateReadmeTask),
     resolvers += Opts.resolver.sonatypeReleases,
     fullResolvers ~= {_.filterNot(_.name == "jcenter")},
     javacOptions in compile ++= Seq("-target", "6", "-source", "6"),
     scalacheckVersion := "1.12.5",
-    libraryDependencies ++= (
-      ("org.scalacheck" %%% "scalacheck" % scalacheckVersion.value % "test") ::
-      Nil
-    ),
     releaseTagName := tagName.value,
     releaseProcess := Seq[ReleaseStep](
       checkSnapshotDependencies,
@@ -117,12 +107,19 @@ object build extends Build {
       val stripTestScope = stripIf { n => n.label == "dependency" && (n \ "scope").text == "test" }
       new RuleTransformer(stripTestScope).transform(node)(0)
     }
+  ) ++ Seq(Compile, Test).flatMap(c =>
+    scalacOptions in (c, console) ~= {_.filterNot(unusedWarnings.toSet)}
+  )
+
+  lazy val msgpack4zNative = CrossProject("msgpack4z-native", file("."), CustomCrossType).settings(
+    commonSettings ++ sonatypeSettings : _*
+  ).settings(
+    libraryDependencies ++= (
+      ("org.scalacheck" %%% "scalacheck" % scalacheckVersion.value % "test") ::
+      Nil
+    )
   ).jvmSettings(
     Sxr.settings : _*
-  ).settings(
-    Seq(Compile, Test).flatMap(c =>
-      scalacOptions in (c, console) ~= {_.filterNot(unusedWarnings.toSet)}
-    ) : _*
   ).jvmSettings(
     libraryDependencies ++= (
       ("com.github.xuwei-k" % "msgpack4z-api" % "0.2.0") ::
