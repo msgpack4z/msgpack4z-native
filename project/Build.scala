@@ -51,7 +51,13 @@ object build extends Build {
       commitReleaseVersion,
       UpdateReadme.updateReadmeProcess,
       tagRelease,
-      ReleaseStep(state => Project.extract(state).runTask(PgpKeys.publishSigned, state)._1),
+      ReleaseStep(
+        action = { state =>
+          val extracted = Project extract state
+          extracted.runAggregated(PgpKeys.publishSigned in Global in extracted.get(thisProjectRef), state)
+        },
+        enableCrossBuild = true
+      ),
       setNextVersion,
       commitNextVersion,
       UpdateReadme.updateReadmeProcess,
