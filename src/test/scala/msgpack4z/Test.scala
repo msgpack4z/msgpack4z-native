@@ -2,11 +2,17 @@ package msgpack4z
 
 import java.math.BigInteger
 
-import org.scalacheck.{Prop, Properties}
+import scalaprops._
+import scalaprops.Property.{forAll, forAllG}
 
-object Test extends Properties("test") {
+object Test extends Scalaprops {
 
-  property("ExtTypeHeader") = Prop.forAll { (tpe: Byte, size: Int) =>
+  override def param = super.param.copy(
+    minSuccessful = 1000,
+    maxSize = 300
+  )
+
+  val ExtTypeHeader = forAll { (tpe: Byte, size: Int) =>
     val out = MsgOutBuffer.create()
     out.packExtTypeHeader(tpe, size)
     val bytes = out.result()
@@ -14,21 +20,21 @@ object Test extends Properties("test") {
     (header.getType == tpe) && (header.getLength == size)
   }
 
-  property("MapHeader") = Prop.forAll { size: Int =>
+  val MapHeader = forAll { size: Int =>
     val out = MsgOutBuffer.create()
     out.packMapHeader(size)
     val bytes = out.result()
     MsgInBuffer(bytes).unpackMapHeader() == size
   }
 
-  property("ArrayHeader") = Prop.forAll { size: Int =>
+  val ArrayHeader = forAll { size: Int =>
     val out = MsgOutBuffer.create()
     out.packArrayHeader(size)
     val bytes = out.result()
     MsgInBuffer(bytes).unpackArrayHeader() == size
   }
 
-  property("byte") = Prop.forAll { a: Byte =>
+  val byte = forAll { a: Byte =>
     val out = MsgOutBuffer.create()
     out.packByte(a)
     val bytes = out.result()
@@ -39,7 +45,7 @@ object Test extends Properties("test") {
     MsgInBuffer(bytes).unpackBigInteger == BigInteger.valueOf(a)
   }
 
-  property("short") = Prop.forAll { a: Short =>
+  val short = forAll { a: Short =>
     val out = MsgOutBuffer.create()
     out.packShort(a)
     val bytes = out.result()
@@ -49,7 +55,7 @@ object Test extends Properties("test") {
     MsgInBuffer(bytes).unpackBigInteger == BigInteger.valueOf(a)
   }
 
-  property("int") = Prop.forAll { a: Int =>
+  val int = forAll { a: Int =>
     val out = MsgOutBuffer.create()
     out.packInt(a)
     val bytes = out.result()
@@ -58,7 +64,7 @@ object Test extends Properties("test") {
     MsgInBuffer(bytes).unpackBigInteger == BigInteger.valueOf(a)
   }
 
-  property("long") = Prop.forAll { a: Long =>
+  val long = forAll { a: Long =>
     val out = MsgOutBuffer.create()
     out.packLong(a)
     val bytes = out.result()
@@ -66,50 +72,84 @@ object Test extends Properties("test") {
     MsgInBuffer(bytes).unpackBigInteger == BigInteger.valueOf(a)
   }
 
-  property("double") = Prop.forAll { a: Double =>
+  val double = forAll { a: Double =>
     val out = MsgOutBuffer.create()
     out.packDouble(a)
     val bytes = out.result()
-    MsgInBuffer(bytes).unpackDouble == a
+    MsgInBuffer(bytes).unpackDouble match {
+      case f if f.isNaN => a.isNaN
+      case f => f == a
+    }
   }
 
-  property("float") = Prop.forAll { a: Float =>
+  val float = forAll { a: Float =>
     val out = MsgOutBuffer.create()
     out.packFloat(a)
     val bytes = out.result()
-    assert(MsgInBuffer(bytes).unpackFloat == a)
-    MsgInBuffer(bytes).unpackDouble == a
+    MsgInBuffer(bytes).unpackFloat match {
+      case f if f.isNaN => assert(a.isNaN)
+      case f => f == a
+    }
+    MsgInBuffer(bytes).unpackDouble match {
+      case f if f.isNaN => a.isNaN
+      case f => f == a
+    }
   }
 
-  property("string") = Prop.forAll { a: String =>
+  // TODO https://github.com/scalaprops/scalaprops/issues/26
+  private[this] val unicodeStringGen: Gen[String] = {
+    def isSurrogate(c: Char): Boolean =
+      (Character.MIN_SURROGATE <= c) && (c <= Character.MAX_SURROGATE)
+
+    Gen.arrayOfN(300, Gen.genCharAll).map{ s =>
+      val b = new java.lang.StringBuilder
+      var i = 0
+      while(i < s.length){
+        val c = s(i)
+        if(!isSurrogate(c)){
+          b.append(c)
+          i += 1
+        }else if((i + 1 < s.length) && Character.isSurrogatePair(c, s(i + 1))){
+          b.append(c)
+          b.append(s(i + 1))
+          i += 2
+        }else{
+          i += 1
+        }
+      }
+      b.toString
+    }
+  }
+
+  val string = forAllG(unicodeStringGen){ a =>
     val out = MsgOutBuffer.create()
     out.packString(a)
     val bytes = out.result()
     MsgInBuffer(bytes).unpackString() == a
-  }
+  }.toProperties((), Param.minSuccessful(300))
 
-  property("binary") = Prop.forAll { a: Array[Byte] =>
+  val binary = forAll { a: Array[Byte] =>
     val out = MsgOutBuffer.create()
     out.packBinary(a)
     val bytes = out.result()
     java.util.Arrays.equals(MsgInBuffer(bytes).unpackBinary(), a)
-  }
+  }.toProperties((), Param.minSuccessful(300))
 
-  property("nil") = Prop {
+  val nil = forAll {
     val out = MsgOutBuffer.create()
     out.packNil()
     val bytes = out.result()
     MsgInBuffer(bytes).unpackNilWithCheck()
   }
 
-  property("true") = Prop {
+  val `true` = forAll {
     val out = MsgOutBuffer.create()
     out.packBoolean(true)
     val bytes = out.result()
     MsgInBuffer(bytes).unpackBoolean()
   }
 
-  property("false") = Prop {
+  val `false` = forAll {
     val out = MsgOutBuffer.create()
     out.packBoolean(false)
     val bytes = out.result()

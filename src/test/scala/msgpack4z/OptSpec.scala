@@ -1,10 +1,16 @@
 package msgpack4z
 
-import org.scalacheck.{Prop, Properties}
+import scalaprops._
+import scalaprops.Property.forAll
 
-object OptSpec extends Properties("opt") {
+object OptSpec extends Scalaprops {
 
-  property("OptBool") = Prop.forAll{ a: Boolean =>
+  override def param = super.param.copy(
+    minSuccessful = 1000,
+    maxSize = 300
+  )
+
+  val optBool = forAll{ a: Boolean =>
     val b = OptBool(a)
     assert(b.nonEmpty)
     assert(b.get == a)
@@ -24,7 +30,7 @@ object OptSpec extends Properties("opt") {
     }
   }
 
-  property("OptByte") = Prop.forAll{ a: Byte =>
+  val optByte = forAll{ a: Byte =>
     val b = OptByte(a)
     assert(b.nonEmpty)
     assert(b.get == a)
@@ -42,7 +48,7 @@ object OptSpec extends Properties("opt") {
     }
   }
 
-  property("OptShort") = Prop.forAll{ a: Short =>
+  val optShort = forAll{ a: Short =>
     val b = OptShort(a)
     assert(b.nonEmpty)
     assert(b.get == a)
@@ -60,7 +66,7 @@ object OptSpec extends Properties("opt") {
     }
   }
 
-  property("OptInt") = Prop.forAll{ a: Int =>
+  val optInt = forAll{ a: Int =>
     val b = OptInt(a)
     assert(b.nonEmpty)
     assert(b.get == a)

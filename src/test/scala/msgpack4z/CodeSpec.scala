@@ -1,8 +1,8 @@
 package msgpack4z
 
-import org.scalacheck.{Prop, Properties}
+import scalaprops._
 
-object CodeSpec extends Properties("Code") {
+object CodeSpec extends Scalaprops {
 
   private[this] val list = List(
     Code.NIL,
@@ -47,7 +47,7 @@ object CodeSpec extends Properties("Code") {
     Code.isFixedMap
   ) ::: list.map(c => c == (_: Byte))
 
-  property("no duplicate") = Prop.secure{
+  val `no duplicate` = Property.forAll{
     assert(list.distinct.size == list.size)
     (Byte.MinValue to Byte.MaxValue).foreach{ b =>
       val a = functions.map(_ apply b.toByte).partition(identity)._1

@@ -7,6 +7,8 @@ import com.typesafe.sbt.pgp.PgpKeys
 import scalanative.sbtplugin.ScalaNativePlugin.autoImport._
 import scalajscrossproject.ScalaJSCrossPlugin.autoImport.{toScalaJSGroupID => _, _}
 import sbtcrossproject.CrossPlugin.autoImport._
+import scalaprops.ScalapropsPlugin.autoImport.scalapropsCoreSettings
+import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport.scalaJSSemantics
 
 object build {
 
@@ -34,16 +36,13 @@ object build {
 
   private[this] val SetScala211 = releaseStepCommand("++" + Scala211)
 
-  val scalacheckVersion = SettingKey[String]("scalacheckVersion")
-
   lazy val commonSettings = ReleasePlugin.extraReleaseCommands ++ Seq(
     name := msgpack4zNativeName,
-    crossScalaVersions := Scala211 :: "2.12.2" :: Nil,
+    crossScalaVersions := Scala211 :: "2.12.2" :: "2.13.0-M1" :: Nil,
     commands += Command.command("updateReadme")(UpdateReadme.updateReadmeTask),
     resolvers += Opts.resolver.sonatypeReleases,
     fullResolvers ~= {_.filterNot(_.name == "jcenter")},
     javacOptions in compile ++= Seq("-target", "6", "-source", "6"),
-    scalacheckVersion := "1.13.5",
     releaseTagName := tagName.value,
     releaseProcess := Seq[ReleaseStep](
       checkSnapshotDependencies,
@@ -129,7 +128,8 @@ object build {
   lazy val msgpack4zNative = crossProject(
     JSPlatform, JVMPlatform, NativePlatform
   ).crossType(CustomCrossType).in(file(".")).settings(
-    commonSettings
+    commonSettings,
+    scalapropsCoreSettings
   ).jvmSettings(
     Sxr.settings,
     libraryDependencies ++= (
@@ -138,7 +138,7 @@ object build {
     )
   ).platformsSettings(JVMPlatform, JSPlatform)(
     libraryDependencies ++= (
-      ("org.scalacheck" %%% "scalacheck" % scalacheckVersion.value % "test") ::
+      ("com.github.scalaprops" %%% "scalaprops" % "0.4.2" % "test") ::
       Nil
     )
   ).platformsSettings(NativePlatform, JSPlatform)(
@@ -146,6 +146,7 @@ object build {
       baseDirectory.value.getParentFile / "js_native/src/main/scala/"
     }
   ).jsSettings(
+    scalaJSSemantics ~= { _.withStrictFloats(true) },
     scalacOptions += {
       val a = (baseDirectory in LocalRootProject).value.toURI.toString
       val g = "https://raw.githubusercontent.com/msgpack4z/msgpack4z-native/" + tagOrHash.value
