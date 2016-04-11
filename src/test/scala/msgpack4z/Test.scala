@@ -32,10 +32,10 @@ object Test extends Properties("test") {
     val out = MsgOutBuffer.create()
     out.packByte(a)
     val bytes = out.result()
-    MsgInBuffer(bytes).unpackByte == a
-    MsgInBuffer(bytes).unpackShort == a
-    MsgInBuffer(bytes).unpackInt == a
-    MsgInBuffer(bytes).unpackLong == a
+    assert(MsgInBuffer(bytes).unpackByte == a)
+    assert(MsgInBuffer(bytes).unpackShort == a)
+    assert(MsgInBuffer(bytes).unpackInt == a)
+    assert(MsgInBuffer(bytes).unpackLong == a)
     MsgInBuffer(bytes).unpackBigInteger == BigInteger.valueOf(a)
   }
 
@@ -43,9 +43,9 @@ object Test extends Properties("test") {
     val out = MsgOutBuffer.create()
     out.packShort(a)
     val bytes = out.result()
-    MsgInBuffer(bytes).unpackShort == a
-    MsgInBuffer(bytes).unpackInt == a
-    MsgInBuffer(bytes).unpackLong == a
+    assert(MsgInBuffer(bytes).unpackShort == a)
+    assert(MsgInBuffer(bytes).unpackInt == a)
+    assert(MsgInBuffer(bytes).unpackLong == a)
     MsgInBuffer(bytes).unpackBigInteger == BigInteger.valueOf(a)
   }
 
@@ -53,8 +53,8 @@ object Test extends Properties("test") {
     val out = MsgOutBuffer.create()
     out.packInt(a)
     val bytes = out.result()
-    MsgInBuffer(bytes).unpackInt == a
-    MsgInBuffer(bytes).unpackLong == a
+    assert(MsgInBuffer(bytes).unpackInt == a)
+    assert(MsgInBuffer(bytes).unpackLong == a)
     MsgInBuffer(bytes).unpackBigInteger == BigInteger.valueOf(a)
   }
 
@@ -62,7 +62,7 @@ object Test extends Properties("test") {
     val out = MsgOutBuffer.create()
     out.packLong(a)
     val bytes = out.result()
-    MsgInBuffer(bytes).unpackLong == a
+    assert(MsgInBuffer(bytes).unpackLong == a)
     MsgInBuffer(bytes).unpackBigInteger == BigInteger.valueOf(a)
   }
 
@@ -77,7 +77,7 @@ object Test extends Properties("test") {
     val out = MsgOutBuffer.create()
     out.packFloat(a)
     val bytes = out.result()
-    MsgInBuffer(bytes).unpackFloat == a
+    assert(MsgInBuffer(bytes).unpackFloat == a)
     MsgInBuffer(bytes).unpackDouble == a
   }
 
