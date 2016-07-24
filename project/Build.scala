@@ -8,7 +8,7 @@ import org.scalajs.sbtplugin.cross.CrossProject
 import org.scalajs.sbtplugin.ScalaJSPlugin
 import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
 
-object build extends Build {
+object build {
 
   private[this] val tagName = Def.setting{
     s"v${if (releaseUseGlobalVersion.value) (version in ThisBuild).value else version.value}"
@@ -137,26 +137,6 @@ object build extends Build {
       val g = "https://raw.githubusercontent.com/msgpack4z/msgpack4z-native/" + tagOrHash.value
       s"-P:scalajs:mapSourceURI:$a->$g/"
     }
-  )
-
-  lazy val msgpack4zNativeJVM = msgpack4zNative.jvm
-
-  lazy val msgpack4zNativeJS = msgpack4zNative.js
-
-  lazy val root = Project(
-    "root", file(".")
-  ).settings(
-    commonSettings : _*
-  ).settings(
-    scalaSource in Compile := file("dummy"),
-    scalaSource in Test := file("dummy"),
-    PgpKeys.publishSigned := {},
-    PgpKeys.publishLocalSigned := {},
-    publishLocal := {},
-    publishArtifact in Compile := false,
-    publish := {}
-  ).aggregate(
-    msgpack4zNativeJVM, msgpack4zNativeJS
   )
 
 }
