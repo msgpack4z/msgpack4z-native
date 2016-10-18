@@ -35,7 +35,7 @@ object build {
   val scalacheckVersion = SettingKey[String]("scalacheckVersion")
 
   lazy val commonSettings = ReleasePlugin.extraReleaseCommands ++ Seq(
-    crossScalaVersions := Scala211 :: "2.12.0-RC1" :: Nil,
+    crossScalaVersions := Scala211 :: "2.12.0-RC2" :: Nil,
     commands += Command.command("updateReadme")(UpdateReadme.updateReadmeTask),
     resolvers += Opts.resolver.sonatypeReleases,
     fullResolvers ~= {_.filterNot(_.name == "jcenter")},
