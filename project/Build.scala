@@ -60,6 +60,7 @@ object build {
       ),
       setNextVersion,
       commitNextVersion,
+      releaseStepCommand("sonatypeReleaseAll"),
       UpdateReadme.updateReadmeProcess,
       pushChanges
     ),
@@ -119,15 +120,13 @@ object build {
   )
 
   lazy val msgpack4zNative = CrossProject("msgpack4z-native", file("."), CustomCrossType).settings(
-    commonSettings ++ sonatypeSettings : _*
-  ).settings(
+    commonSettings,
     libraryDependencies ++= (
       ("org.scalacheck" %%% "scalacheck" % scalacheckVersion.value % "test") ::
       Nil
     )
   ).jvmSettings(
-    Sxr.settings : _*
-  ).jvmSettings(
+    Sxr.settings,
     libraryDependencies ++= (
       ("com.github.xuwei-k" % "msgpack4z-api" % "0.2.0") ::
       Nil

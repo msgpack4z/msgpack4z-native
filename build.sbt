@@ -7,8 +7,7 @@ lazy val msgpack4zNativeJS = msgpack4zNative.js
 lazy val root = Project(
   "root", file(".")
 ).settings(
-  commonSettings : _*
-).settings(
+  commonSettings,
   scalaSource in Compile := file("dummy"),
   scalaSource in Test := file("dummy"),
   PgpKeys.publishSigned := {},
