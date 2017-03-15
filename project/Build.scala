@@ -4,9 +4,9 @@ import xerial.sbt.Sonatype._
 import ReleaseStateTransformations._
 import sbtrelease.ReleasePlugin.autoImport._
 import com.typesafe.sbt.pgp.PgpKeys
-import org.scalajs.sbtplugin.cross.CrossProject
-import org.scalajs.sbtplugin.ScalaJSPlugin
-import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
+import scalanative.sbtplugin.ScalaNativePlugin.autoImport._
+import scalajscrossproject.ScalaJSCrossPlugin.autoImport.{toScalaJSGroupID => _, _}
+import sbtcrossproject.CrossPlugin.autoImport._
 
 object build {
 
@@ -30,7 +30,7 @@ object build {
     Nil
   )
 
-  private[this] val Scala211 = "2.11.8"
+  val Scala211 = "2.11.8"
 
   val scalacheckVersion = SettingKey[String]("scalacheckVersion")
 
@@ -119,24 +119,33 @@ object build {
     scalacOptions in (c, console) ~= {_.filterNot(unusedWarnings.toSet)}
   )
 
-  lazy val msgpack4zNative = CrossProject("msgpack4z-native", file("."), CustomCrossType).settings(
-    commonSettings,
-    libraryDependencies ++= (
-      ("org.scalacheck" %%% "scalacheck" % scalacheckVersion.value % "test") ::
-      Nil
-    )
+  lazy val msgpack4zNative = crossProject(
+    JSPlatform, JVMPlatform, NativePlatform
+  ).crossType(CustomCrossType).in(file(".")).settings(
+    commonSettings
   ).jvmSettings(
     Sxr.settings,
     libraryDependencies ++= (
       ("com.github.xuwei-k" % "msgpack4z-api" % "0.2.0") ::
       Nil
     )
+  ).platformsSettings(JVMPlatform, JSPlatform)(
+    libraryDependencies ++= (
+      ("org.scalacheck" %%% "scalacheck" % scalacheckVersion.value % "test") ::
+      Nil
+    )
+  ).platformsSettings(NativePlatform, JSPlatform)(
+    unmanagedSourceDirectories in Compile += {
+      baseDirectory.value.getParentFile / "js_native/src/main/scala/"
+    }
   ).jsSettings(
     scalacOptions += {
       val a = (baseDirectory in LocalRootProject).value.toURI.toString
       val g = "https://raw.githubusercontent.com/msgpack4z/msgpack4z-native/" + tagOrHash.value
       s"-P:scalajs:mapSourceURI:$a->$g/"
     }
+  ).nativeSettings(
+    sources in Test := Nil
   )
 
 }
