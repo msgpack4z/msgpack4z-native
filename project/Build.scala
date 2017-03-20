@@ -32,9 +32,12 @@ object build {
 
   val Scala211 = "2.11.8"
 
+  private[this] val SetScala211 = releaseStepCommand("++" + Scala211)
+
   val scalacheckVersion = SettingKey[String]("scalacheckVersion")
 
   lazy val commonSettings = ReleasePlugin.extraReleaseCommands ++ Seq(
+    name := msgpack4zNativeName,
     crossScalaVersions := Scala211 :: "2.12.1" :: Nil,
     commands += Command.command("updateReadme")(UpdateReadme.updateReadmeTask),
     resolvers += Opts.resolver.sonatypeReleases,
@@ -47,6 +50,8 @@ object build {
       inquireVersions,
       runClean,
       runTest,
+      SetScala211,
+      releaseStepCommand("nativeTest/run"),
       setReleaseVersion,
       commitReleaseVersion,
       UpdateReadme.updateReadmeProcess,
@@ -58,6 +63,8 @@ object build {
         },
         enableCrossBuild = true
       ),
+      SetScala211,
+      releaseStepCommand("msgpack4zNativeNative/publishSigned"),
       setNextVersion,
       commitNextVersion,
       releaseStepCommand("sonatypeReleaseAll"),
