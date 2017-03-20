@@ -40,7 +40,7 @@ object build {
     resolvers += Opts.resolver.sonatypeReleases,
     fullResolvers ~= {_.filterNot(_.name == "jcenter")},
     javacOptions in compile ++= Seq("-target", "6", "-source", "6"),
-    scalacheckVersion := "1.13.4",
+    scalacheckVersion := "1.13.5",
     releaseTagName := tagName.value,
     releaseProcess := Seq[ReleaseStep](
       checkSnapshotDependencies,
