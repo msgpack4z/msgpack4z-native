@@ -38,7 +38,7 @@ object build {
 
   lazy val commonSettings = ReleasePlugin.extraReleaseCommands ++ Seq(
     name := msgpack4zNativeName,
-    crossScalaVersions := Scala211 :: "2.12.1" :: Nil,
+    crossScalaVersions := Scala211 :: "2.12.2" :: Nil,
     commands += Command.command("updateReadme")(UpdateReadme.updateReadmeTask),
     resolvers += Opts.resolver.sonatypeReleases,
     fullResolvers ~= {_.filterNot(_.name == "jcenter")},
