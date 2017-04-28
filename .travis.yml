@@ -3,7 +3,7 @@ language: scala
 sudo: false
 
 scala:
-  - 2.11.8
+  - 2.11.11
 
 jdk:
   - oraclejdk7
@@ -39,7 +39,7 @@ matrix:
       - sbt ++${TRAVIS_SCALA_VERSION} msgpack4zNativeJVM/test
       - find $HOME/.ivy2/cache -name "ivydata-*.properties" | xargs rm
       - find $HOME/.ivy2/cache -name "*SNAPSHOT*" | xargs rm -rf
-    - scala: 2.11.8
+    - scala: 2.11.11
       jdk: oraclejdk8
       sudo: required
       before_install:
