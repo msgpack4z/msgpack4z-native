@@ -138,7 +138,7 @@ object build {
     )
   ).platformsSettings(JVMPlatform, JSPlatform)(
     libraryDependencies ++= (
-      ("com.github.scalaprops" %%% "scalaprops" % "0.4.2" % "test") ::
+      ("com.github.scalaprops" %%% "scalaprops" % "0.4.3" % "test") ::
       Nil
     )
   ).platformsSettings(NativePlatform, JSPlatform)(
