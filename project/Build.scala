@@ -50,7 +50,7 @@ object build {
       runClean,
       runTest,
       SetScala211,
-      releaseStepCommand("nativeTest/run"),
+      releaseStepCommand("msgpack4zNativeNative/test"),
       setReleaseVersion,
       commitReleaseVersion,
       UpdateReadme.updateReadmeProcess,
@@ -129,16 +129,15 @@ object build {
     JSPlatform, JVMPlatform, NativePlatform
   ).crossType(CustomCrossType).in(file(".")).settings(
     commonSettings,
-    scalapropsCoreSettings
+    scalapropsCoreSettings,
+    libraryDependencies ++= (
+      ("com.github.scalaprops" %%% "scalaprops" % "0.5.0" % "test") ::
+      Nil
+    )
   ).jvmSettings(
     Sxr.settings,
     libraryDependencies ++= (
       ("com.github.xuwei-k" % "msgpack4z-api" % "0.2.0") ::
-      Nil
-    )
-  ).platformsSettings(JVMPlatform, JSPlatform)(
-    libraryDependencies ++= (
-      ("com.github.scalaprops" %%% "scalaprops" % "0.4.3" % "test") ::
       Nil
     )
   ).platformsSettings(NativePlatform, JSPlatform)(
@@ -152,8 +151,6 @@ object build {
       val g = "https://raw.githubusercontent.com/msgpack4z/msgpack4z-native/" + tagOrHash.value
       s"-P:scalajs:mapSourceURI:$a->$g/"
     }
-  ).nativeSettings(
-    sources in Test := Nil
   )
 
 }

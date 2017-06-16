@@ -4,15 +4,8 @@ lazy val msgpack4zNativeJVM = msgpack4zNative.jvm
 
 lazy val msgpack4zNativeJS = msgpack4zNative.js
 
-lazy val msgpack4zNativeNative = msgpack4zNative.native
-
-lazy val nativeTest = project.enablePlugins(
-  ScalaNativePlugin
-).settings(
-  scalaVersion := build.Scala211,
-  noPublish
-).dependsOn(
-  msgpack4zNativeNative
+lazy val msgpack4zNativeNative = msgpack4zNative.native.settings(
+  scalapropsNativeSettings
 )
 
 lazy val noPublish = Seq(
