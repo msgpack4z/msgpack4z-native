@@ -9,6 +9,7 @@ import scalajscrossproject.ScalaJSCrossPlugin.autoImport.{toScalaJSGroupID => _,
 import sbtcrossproject.CrossPlugin.autoImport._
 import scalaprops.ScalapropsPlugin.autoImport.scalapropsCoreSettings
 import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport.scalaJSSemantics
+import org.portablescala.sbtplatformdeps.PlatformDepsPlugin.autoImport._
 
 object build {
 
