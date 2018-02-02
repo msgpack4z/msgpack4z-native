@@ -138,7 +138,7 @@ object build {
     commonSettings,
     scalapropsCoreSettings,
     libraryDependencies ++= (
-      ("com.github.scalaprops" %%% "scalaprops" % "0.5.1" % "test") ::
+      ("com.github.scalaprops" %%% "scalaprops" % "0.5.3" % "test") ::
       Nil
     )
   ).jvmSettings(
