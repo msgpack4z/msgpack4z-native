@@ -56,8 +56,6 @@ object build {
       inquireVersions,
       runClean,
       runTest,
-      SetScala211,
-      releaseStepCommand("msgpack4zNativeNative/test"),
       setReleaseVersion,
       commitReleaseVersion,
       UpdateReadme.updateReadmeProcess,
