@@ -33,7 +33,7 @@ object build {
     Nil
   )
 
-  val Scala211 = "2.11.11"
+  val Scala211 = "2.11.12"
 
   private[this] val SetScala211 = releaseStepCommand("++" + Scala211)
 
