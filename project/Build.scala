@@ -40,7 +40,7 @@ object build {
 
   lazy val commonSettings = ReleasePlugin.extraReleaseCommands ++ Seq(
     name := msgpack4zNativeName,
-    crossScalaVersions := Scala211 :: "2.12.6" :: "2.13.0-M3" :: Nil,
+    crossScalaVersions := Scala211 :: "2.12.6" :: "2.13.0-M3" :: "2.13.0-M4" :: Nil,
     commands += Command.command("updateReadme")(UpdateReadme.updateReadmeTask),
     resolvers += Opts.resolver.sonatypeReleases,
     publishTo := Some(
