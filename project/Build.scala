@@ -91,9 +91,11 @@ object build {
       "-language:existentials" ::
       "-language:higherKinds" ::
       "-language:implicitConversions" ::
-      "-Yno-adapted-args" ::
       Nil
     ) ::: unusedWarnings,
+    scalacOptions ++= PartialFunction.condOpt(CrossVersion.partialVersion(scalaVersion.value)) {
+      case Some((2, v)) if v <= 12 => "-Yno-adapted-args"
+    }.toList,
     scalacOptions in (Compile, doc) ++= {
       val tag = tagOrHash.value
       Seq(
