@@ -27,9 +27,9 @@ before_cache:
 
 matrix:
   include:
-    - scala: 2.12.7
+    - scala: 2.12.8
       jdk: openjdk11
-    - scala: 2.12.7
+    - scala: 2.12.8
       jdk: oraclejdk8
     - scala: 2.13.0-M5
       jdk: oraclejdk8
