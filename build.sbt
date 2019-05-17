@@ -73,15 +73,18 @@ lazy val commonSettings = Def.settings(
     "-deprecation" ::
     "-unchecked" ::
     "-Xlint" ::
-    "-Xfuture" ::
     "-language:existentials" ::
     "-language:higherKinds" ::
     "-language:implicitConversions" ::
     Nil
   ) ::: unusedWarnings,
   scalacOptions ++= PartialFunction.condOpt(CrossVersion.partialVersion(scalaVersion.value)) {
-    case Some((2, v)) if v <= 12 => "-Yno-adapted-args"
-  }.toList,
+    case Some((2, v)) if v <= 12 =>
+      Seq(
+        "-Yno-adapted-args",
+        "-Xfuture"
+      )
+  }.toList.flatten,
   scalacOptions in (Compile, doc) ++= {
     val tag = tagOrHash.value
     Seq(
