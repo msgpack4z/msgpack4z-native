@@ -24,7 +24,6 @@ script:
 before_cache:
   - find $HOME/.ivy2/cache -name "ivydata-*.properties" | xargs rm
   - find $HOME/.ivy2/cache -name "*SNAPSHOT*" | xargs rm -rf
-  - if [[ ${JAVA_HOME} == $(jdk_switcher home oraclejdk8) ]]; then rm -rf $HOME/.ivy2/cache ; fi
 
 matrix:
   include:
