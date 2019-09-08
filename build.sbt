@@ -28,7 +28,6 @@ lazy val commonSettings = Def.settings(
   name := msgpack4zNativeName,
   crossScalaVersions := Scala211 :: "2.12.8" :: "2.13.0" :: Nil,
   commands += Command.command("updateReadme")(UpdateReadme.updateReadmeTask),
-  resolvers += Opts.resolver.sonatypeReleases,
   publishTo := Some(
     if (isSnapshot.value)
       Opts.resolver.sonatypeSnapshots
