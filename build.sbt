@@ -26,7 +26,7 @@ val SetScala211 = releaseStepCommand("++" + Scala211)
 lazy val commonSettings = Def.settings(
   ReleasePlugin.extraReleaseCommands,
   name := msgpack4zNativeName,
-  crossScalaVersions := Scala211 :: "2.12.10" :: "2.13.0" :: Nil,
+  crossScalaVersions := Scala211 :: "2.12.10" :: "2.13.1" :: Nil,
   commands += Command.command("updateReadme")(UpdateReadme.updateReadmeTask),
   publishTo := Some(
     if (isSnapshot.value)
