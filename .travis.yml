@@ -19,7 +19,7 @@ cache:
 script:
   - git config core.whitespace tab-in-indent,trailing-space,space-before-tab,cr-at-eol
   - git show --oneline --check
-  - wget https://raw.githubusercontent.com/paulp/sbt-extras/b9c8cb27/sbt && chmod +x ./sbt
+  - wget https://raw.githubusercontent.com/paulp/sbt-extras/afc38460cbfb45db9318/sbt && chmod +x ./sbt
   - ./sbt ++${TRAVIS_SCALA_VERSION} update compile test:compile test publishLocal
 
 before_cache:

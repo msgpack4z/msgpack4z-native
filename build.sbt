@@ -1,7 +1,6 @@
 import build._
 import sbtrelease._
 import ReleaseStateTransformations._
-import com.typesafe.sbt.pgp.PgpKeys
 import sbtcrossproject.crossProject
 
 val tagName = Def.setting{
@@ -12,7 +11,7 @@ val tagOrHash = Def.setting{
   if(isSnapshot.value) gitHash() else tagName.value
 }
 
-def gitHash(): String = sys.process.Process("git rev-parse HEAD").lines_!.head
+def gitHash(): String = sys.process.Process("git rev-parse HEAD").lineStream_!.head
 
 val unusedWarnings = (
   "-Ywarn-unused" ::

@@ -1,6 +1,7 @@
 import sbt._, Keys._
 import sbtrelease.Git
 import sbtrelease.ReleasePlugin.autoImport.ReleaseStep
+import scala.sys.process.Process
 
 object UpdateReadme {
 
