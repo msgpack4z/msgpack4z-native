@@ -3,6 +3,8 @@ import sbtrelease._
 import ReleaseStateTransformations._
 import sbtcrossproject.crossProject
 
+val DottyVersion = "0.21.0-RC1"
+
 Global / onChangedBuildSource := ReloadOnSourceChanges
 
 val tagName = Def.setting {
@@ -50,6 +52,8 @@ lazy val commonSettings = Def.settings(
     ),
     SetScala211,
     releaseStepCommand("msgpack4zNativeNative/publishSigned"),
+    releaseStepCommand("++" + DottyVersion + "!"),
+    releaseStepCommand("msgpack4zNativeJVM/publishSigned"),
     releaseStepCommandAndRemaining("sonatypeBundleRelease"),
     setNextVersion,
     commitNextVersion,
@@ -85,12 +89,16 @@ lazy val commonSettings = Def.settings(
     .flatten,
   scalacOptions in (Compile, doc) ++= {
     val tag = tagOrHash.value
-    Seq(
-      "-sourcepath",
-      (baseDirectory in LocalRootProject).value.getAbsolutePath,
-      "-doc-source-url",
-      s"https://github.com/msgpack4z/msgpack4z-native/tree/${tag}€{FILE_PATH}.scala"
-    )
+    if (isDotty.value) {
+      Nil
+    } else {
+      Seq(
+        "-sourcepath",
+        (baseDirectory in LocalRootProject).value.getAbsolutePath,
+        "-doc-source-url",
+        s"https://github.com/msgpack4z/msgpack4z-native/tree/${tag}€{FILE_PATH}.scala"
+      )
+    }
   },
   scalaVersion := Scala211,
   pomExtra :=
