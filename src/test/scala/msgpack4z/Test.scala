@@ -20,21 +20,21 @@ object Test extends Scalaprops {
     (header.getType == tpe) && (header.getLength == size)
   }
 
-  val MapHeader = forAll { size: Int =>
+  val MapHeader = forAll { (size: Int) =>
     val out = MsgOutBuffer.create()
     out.packMapHeader(size)
     val bytes = out.result()
     MsgInBuffer(bytes).unpackMapHeader() == size
   }
 
-  val ArrayHeader = forAll { size: Int =>
+  val ArrayHeader = forAll { (size: Int) =>
     val out = MsgOutBuffer.create()
     out.packArrayHeader(size)
     val bytes = out.result()
     MsgInBuffer(bytes).unpackArrayHeader() == size
   }
 
-  val byte = forAll { a: Byte =>
+  val byte = forAll { (a: Byte) =>
     val out = MsgOutBuffer.create()
     out.packByte(a)
     val bytes = out.result()
@@ -45,7 +45,7 @@ object Test extends Scalaprops {
     MsgInBuffer(bytes).unpackBigInteger == BigInteger.valueOf(a)
   }
 
-  val short = forAll { a: Short =>
+  val short = forAll { (a: Short) =>
     val out = MsgOutBuffer.create()
     out.packShort(a)
     val bytes = out.result()
@@ -55,7 +55,7 @@ object Test extends Scalaprops {
     MsgInBuffer(bytes).unpackBigInteger == BigInteger.valueOf(a)
   }
 
-  val int = forAll { a: Int =>
+  val int = forAll { (a: Int) =>
     val out = MsgOutBuffer.create()
     out.packInt(a)
     val bytes = out.result()
@@ -64,7 +64,7 @@ object Test extends Scalaprops {
     MsgInBuffer(bytes).unpackBigInteger == BigInteger.valueOf(a)
   }
 
-  val long = forAll { a: Long =>
+  val long = forAll { (a: Long) =>
     val out = MsgOutBuffer.create()
     out.packLong(a)
     val bytes = out.result()
@@ -72,7 +72,7 @@ object Test extends Scalaprops {
     MsgInBuffer(bytes).unpackBigInteger == BigInteger.valueOf(a)
   }
 
-  val double = forAll { a: Double =>
+  val double = forAll { (a: Double) =>
     val out = MsgOutBuffer.create()
     out.packDouble(a)
     val bytes = out.result()
@@ -82,7 +82,7 @@ object Test extends Scalaprops {
     }
   }
 
-  val float = forAll { a: Float =>
+  val float = forAll { (a: Float) =>
     val out = MsgOutBuffer.create()
     out.packFloat(a)
     val bytes = out.result()
@@ -128,7 +128,7 @@ object Test extends Scalaprops {
     MsgInBuffer(bytes).unpackString() == a
   }.toProperties((), Param.minSuccessful(300))
 
-  val binary = forAll { a: Array[Byte] =>
+  val binary = forAll { (a: Array[Byte]) =>
     val out = MsgOutBuffer.create()
     out.packBinary(a)
     val bytes = out.result()
