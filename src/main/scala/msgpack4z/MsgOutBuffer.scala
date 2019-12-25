@@ -3,7 +3,7 @@ package msgpack4z
 import java.io.ByteArrayOutputStream
 import java.math.BigInteger
 
-final class MsgOutBuffer private(buf: ByteArrayOutputStream) extends MsgPacker{
+final class MsgOutBuffer private (buf: ByteArrayOutputStream) extends MsgPacker {
 
   override def result(): Array[Byte] = {
     buf.toByteArray
@@ -79,8 +79,7 @@ final class MsgOutBuffer private(buf: ByteArrayOutputStream) extends MsgPacker{
     } else {
       if (v < (1 << 8)) {
         writeByteAndByte(Code.UINT8, v.asInstanceOf[Byte])
-      }
-      else {
+      } else {
         writeByteAndShort(Code.UINT16, v)
       }
     }
@@ -107,7 +106,6 @@ final class MsgOutBuffer private(buf: ByteArrayOutputStream) extends MsgPacker{
       }
     }
   }
-
 
   def packLong(v: Long): Unit = {
     if (v < -(1L << 5)) {
@@ -166,10 +164,10 @@ final class MsgOutBuffer private(buf: ByteArrayOutputStream) extends MsgPacker{
   }
 
   override def packArrayHeader(size: Int): Unit = {
-    if(0 <= size) {
-      if(size < (1 << 4)) {
+    if (0 <= size) {
+      if (size < (1 << 4)) {
         buf.write((Code.FIXARRAY_PREFIX | size).asInstanceOf[Byte])
-      } else if(size < (1 << 16)) {
+      } else if (size < (1 << 16)) {
         writeByteAndShort(Code.ARRAY16, size.asInstanceOf[Short])
       } else {
         writeByteAndInt(Code.ARRAY32, size)
@@ -181,9 +179,9 @@ final class MsgOutBuffer private(buf: ByteArrayOutputStream) extends MsgPacker{
 
   override def packBinary(array: Array[Byte]): Unit = {
     val len = array.length
-    if(len < (1 << 8)) {
+    if (len < (1 << 8)) {
       writeByteAndByte(Code.BIN8, len.asInstanceOf[Byte])
-    } else if(len < (1 << 16)) {
+    } else if (len < (1 << 16)) {
       writeByteAndShort(Code.BIN16, len.asInstanceOf[Short])
     } else {
       writeByteAndInt(Code.BIN32, len)
@@ -200,7 +198,7 @@ final class MsgOutBuffer private(buf: ByteArrayOutputStream) extends MsgPacker{
   }
 
   override def packMapHeader(size: Int): Unit = {
-    if(0 <= size) {
+    if (0 <= size) {
       if (size < (1 << 4)) {
         buf.write((Code.FIXMAP_PREFIX | size).asInstanceOf[Byte])
       } else if (size < (1 << 16)) {
@@ -214,15 +212,15 @@ final class MsgOutBuffer private(buf: ByteArrayOutputStream) extends MsgPacker{
   }
 
   override def packBoolean(a: Boolean): Unit = {
-    buf.write(if(a) Code.TRUE else Code.FALSE)
+    buf.write(if (a) Code.TRUE else Code.FALSE)
   }
 
   private[this] def writeStringHeader(len: Int): Unit = {
-    if(len < (1 << 5)) {
+    if (len < (1 << 5)) {
       buf.write((Code.FIXSTR_PREFIX | len).asInstanceOf[Byte])
-    } else if(len < (1 << 8)) {
+    } else if (len < (1 << 8)) {
       writeByteAndByte(Code.STR8, len.asInstanceOf[Byte])
-    } else if(len < (1 << 16)) {
+    } else if (len < (1 << 16)) {
       writeByteAndShort(Code.STR16, len.asInstanceOf[Short])
     } else {
       writeByteAndInt(Code.STR32, len)

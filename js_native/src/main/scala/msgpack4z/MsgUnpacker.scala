@@ -3,8 +3,8 @@ package msgpack4z
 import java.math.BigInteger
 
 /**
-  * @see [[https://github.com/msgpack4z/msgpack4z-api/blob/v0.2.0/src/main/java/msgpack4z/MsgUnpacker.java]]
-  */
+ * @see [[https://github.com/msgpack4z/msgpack4z-api/blob/v0.2.0/src/main/java/msgpack4z/MsgUnpacker.java]]
+ */
 trait MsgUnpacker {
   def nextType(): MsgType
   def unpackByte(): Byte

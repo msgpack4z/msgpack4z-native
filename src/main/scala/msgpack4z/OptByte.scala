@@ -1,13 +1,13 @@
 package msgpack4z
 
-sealed abstract class OptByte{
+sealed abstract class OptByte {
   def get: Byte
   def isEmpty: Boolean
   final def nonEmpty: Boolean = !isEmpty
 }
 
-object OptByte{
-  private[this] final case class Just(get: Byte) extends OptByte{
+object OptByte {
+  private[this] final case class Just(get: Byte) extends OptByte {
     def isEmpty = false
   }
   private[this] case object Empty extends OptByte {

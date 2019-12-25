@@ -18,7 +18,7 @@ object Code {
     (b & 0xe0.toByte) == Code.FIXSTR_PREFIX
   }
 
-  def isFixedArray (b: Byte): Boolean = {
+  def isFixedArray(b: Byte): Boolean = {
     (b & 0xf0.toByte) == Code.FIXARRAY_PREFIX
   }
 

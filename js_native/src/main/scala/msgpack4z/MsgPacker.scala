@@ -3,8 +3,8 @@ package msgpack4z
 import java.math.BigInteger
 
 /**
-  * @see [[https://github.com/msgpack4z/msgpack4z-api/blob/v0.2.0/src/main/java/msgpack4z/MsgPacker.java]]
-  */
+ * @see [[https://github.com/msgpack4z/msgpack4z-api/blob/v0.2.0/src/main/java/msgpack4z/MsgPacker.java]]
+ */
 trait MsgPacker {
   def packByte(a: Byte): Unit
   def packShort(a: Short): Unit

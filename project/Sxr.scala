@@ -25,7 +25,7 @@ object Sxr {
 
   val settings: Seq[Setting[_]] = Defaults.packageTaskSettings(
     sxr in Compile,
-    Def.task{
+    Def.task {
       val dir = (crossTarget in Compile).value
       val _ = (compile in Compile).value
       Path.allSubpaths(dir / "classes.sxr").toSeq

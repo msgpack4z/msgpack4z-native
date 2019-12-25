@@ -1,14 +1,14 @@
 package msgpack4z
 
-import java.io.{EOFException, ByteArrayInputStream}
+import java.io.{ByteArrayInputStream, EOFException}
 import java.math.BigInteger
 
-object MsgInBuffer{
+object MsgInBuffer {
   def apply(bytes: Array[Byte]): MsgInBuffer =
     new MsgInBuffer(new ByteArrayInputStream(bytes))
 }
 
-final class MsgInBuffer(buf: ByteArrayInputStream) extends MsgUnpacker{
+final class MsgInBuffer(buf: ByteArrayInputStream) extends MsgUnpacker {
 
   def skipBytes(n: Int): Unit = {
     buf.skip(n)
@@ -64,7 +64,7 @@ final class MsgInBuffer(buf: ByteArrayInputStream) extends MsgUnpacker{
   }
 
   def unpackBooleanOpt(): OptBool = {
-    readByte() match{
+    readByte() match {
       case Code.TRUE =>
         OptBool.True
       case Code.FALSE =>
@@ -78,34 +78,34 @@ final class MsgInBuffer(buf: ByteArrayInputStream) extends MsgUnpacker{
     val b = readByte()
     if (Code.isFixInt(b)) {
       OptByte(b)
-    }else {
+    } else {
       b match {
         case Code.UINT8 =>
           val u8 = readByte()
           if (u8 < 0) {
             OptByte.empty
-          }else{
+          } else {
             OptByte(u8)
           }
         case Code.UINT16 =>
           val u16 = readShort()
           if (u16 < 0 || u16 > Byte.MaxValue) {
             OptByte.empty
-          }else{
+          } else {
             OptByte(u16.asInstanceOf[Byte])
           }
         case Code.UINT32 =>
           val u32 = readInt()
           if (u32 < 0 || u32 > Byte.MaxValue) {
             OptByte.empty
-          }else{
+          } else {
             OptByte(u32.asInstanceOf[Byte])
           }
         case Code.UINT64 =>
           val u64 = readLong()
           if (u64 < 0L || u64 > Byte.MaxValue) {
             OptByte.empty
-          }else{
+          } else {
             OptByte(u64.asInstanceOf[Byte])
           }
         case Code.INT8 =>
@@ -114,21 +114,21 @@ final class MsgInBuffer(buf: ByteArrayInputStream) extends MsgUnpacker{
           val i16 = readShort()
           if (i16 < Byte.MinValue || i16 > Byte.MaxValue) {
             OptByte.empty
-          }else{
+          } else {
             OptByte(i16.asInstanceOf[Byte])
           }
         case Code.INT32 =>
           val i32 = readInt()
           if (i32 < Byte.MinValue || i32 > Byte.MaxValue) {
             OptByte.empty
-          }else{
+          } else {
             OptByte(i32.asInstanceOf[Byte])
           }
         case Code.INT64 =>
           val i64 = readLong()
           if (i64 < Byte.MinValue || i64 > Byte.MaxValue) {
             OptByte.empty
-          }else{
+          } else {
             OptByte(i64.asInstanceOf[Byte])
           }
         case _ =>
@@ -141,7 +141,7 @@ final class MsgInBuffer(buf: ByteArrayInputStream) extends MsgUnpacker{
     val b = readByte()
     if (Code.isFixInt(b)) {
       OptShort(b)
-    }else {
+    } else {
       b match {
         case Code.UINT8 =>
           val u8 = readByte()
@@ -150,21 +150,21 @@ final class MsgInBuffer(buf: ByteArrayInputStream) extends MsgUnpacker{
           val u16 = readShort()
           if (u16 < 0) {
             OptShort.empty
-          }else{
+          } else {
             OptShort(u16)
           }
         case Code.UINT32 =>
           val u32 = readInt()
           if (u32 < 0 || u32 > Short.MaxValue) {
             OptShort.empty
-          }else{
+          } else {
             OptShort(u32.asInstanceOf[Short])
           }
         case Code.UINT64 =>
           val u64 = readLong()
           if (u64 < 0L || u64 > Short.MaxValue) {
             OptShort.empty
-          }else{
+          } else {
             OptShort(u64.asInstanceOf[Short])
           }
         case Code.INT8 =>
@@ -176,14 +176,14 @@ final class MsgInBuffer(buf: ByteArrayInputStream) extends MsgUnpacker{
           val i32 = readInt()
           if (i32 < Short.MinValue || i32 > Short.MaxValue) {
             OptShort.empty
-          }else{
+          } else {
             OptShort(i32.asInstanceOf[Short])
           }
         case Code.INT64 =>
           val i64 = readLong()
           if (i64 < Short.MinValue || i64 > Short.MaxValue) {
             OptShort.empty
-          }else{
+          } else {
             OptShort(i64.asInstanceOf[Short])
           }
         case _ =>
@@ -196,7 +196,7 @@ final class MsgInBuffer(buf: ByteArrayInputStream) extends MsgUnpacker{
     val b = readByte()
     if (Code.isFixInt(b)) {
       OptInt(b)
-    }else {
+    } else {
       b match {
         case Code.UINT8 =>
           val u8 = readByte()
@@ -208,14 +208,14 @@ final class MsgInBuffer(buf: ByteArrayInputStream) extends MsgUnpacker{
           val u32 = readInt()
           if (u32 < 0) {
             OptInt.empty
-          }else{
+          } else {
             OptInt(u32)
           }
         case Code.UINT64 =>
           val u64 = readLong()
           if (u64 < 0L || u64 > Int.MaxValue) {
             OptInt.empty
-          }else{
+          } else {
             OptInt(u64.asInstanceOf[Int])
           }
         case Code.INT8 =>
@@ -228,7 +228,7 @@ final class MsgInBuffer(buf: ByteArrayInputStream) extends MsgUnpacker{
           val i64 = readLong()
           if (i64 < Int.MinValue || i64 > Int.MaxValue) {
             OptInt.empty
-          }else{
+          } else {
             OptInt(i64.asInstanceOf[Int])
           }
         case _ =>
@@ -241,7 +241,7 @@ final class MsgInBuffer(buf: ByteArrayInputStream) extends MsgUnpacker{
     val b = readByte()
     if (Code.isFixInt(b)) {
       b
-    }else {
+    } else {
       b match {
         case Code.UINT8 =>
           val u8 = readByte()
@@ -253,8 +253,7 @@ final class MsgInBuffer(buf: ByteArrayInputStream) extends MsgUnpacker{
           val u32 = readInt()
           if (u32 < 0) {
             (u32 & 0x7fffffff) + 0x80000000L
-          }
-          else {
+          } else {
             u32
           }
         case Code.UINT64 =>
@@ -279,7 +278,7 @@ final class MsgInBuffer(buf: ByteArrayInputStream) extends MsgUnpacker{
     val b = readByte()
     if (Code.isFixInt(b)) {
       BigInteger.valueOf(b)
-    }else {
+    } else {
       b match {
         case Code.UINT8 =>
           val u8 = readByte()
@@ -291,16 +290,14 @@ final class MsgInBuffer(buf: ByteArrayInputStream) extends MsgUnpacker{
           val u32 = readInt()
           if (u32 < 0) {
             BigInteger.valueOf((u32 & 0x7fffffff) + 0x80000000L)
-          }
-          else {
+          } else {
             BigInteger.valueOf(u32)
           }
         case Code.UINT64 =>
           val u64 = readLong()
           if (u64 < 0L) {
             BigInteger.valueOf(u64 + Long.MaxValue + 1L).setBit(63)
-          }
-          else {
+          } else {
             BigInteger.valueOf(u64)
           }
         case Code.INT8 =>
@@ -340,9 +337,9 @@ final class MsgInBuffer(buf: ByteArrayInputStream) extends MsgUnpacker{
 
   def unpackArrayHeaderOpt(): OptInt = {
     val b = readByte()
-    if(Code.isFixedArray(b)){
+    if (Code.isFixedArray(b)) {
       OptInt(b & 0x0f)
-    }else{
+    } else {
       b match {
         case Code.ARRAY16 =>
           OptInt(readNextLength16())
@@ -356,9 +353,9 @@ final class MsgInBuffer(buf: ByteArrayInputStream) extends MsgUnpacker{
 
   def unpackMapHeaderOpt(): OptInt = {
     val b = readByte()
-    if(Code.isFixedMap(b)){
+    if (Code.isFixedMap(b)) {
       OptInt(b & 0x0f)
-    }else{
+    } else {
       b match {
         case Code.MAP16 =>
           OptInt(readNextLength16())
@@ -383,12 +380,11 @@ final class MsgInBuffer(buf: ByteArrayInputStream) extends MsgUnpacker{
     }
   }
 
-
   def unpackRawStringHeader: OptInt = {
     val b = readByte()
-    if(Code.isFixedRaw(b)){
+    if (Code.isFixedRaw(b)) {
       OptInt(b & 0x1f)
-    }else{
+    } else {
       readStringHeader(b)
     }
   }
@@ -401,27 +397,26 @@ final class MsgInBuffer(buf: ByteArrayInputStream) extends MsgUnpacker{
 
   private[this] def readNextLength32(): OptInt = {
     val u32 = readInt()
-    if(u32 < 0) {
+    if (u32 < 0) {
       OptInt.empty
-    }else{
+    } else {
       OptInt(u32)
     }
   }
-
 
   override def close(): Unit = {
     buf.close()
   }
 
   override def nextType(): MsgType = {
-    if(buf.markSupported()){
+    if (buf.markSupported()) {
       buf.mark(1024)
-      try{
+      try {
         Code.getType(readByte())
-      }finally{
+      } finally {
         buf.reset()
       }
-    }else{
+    } else {
       sys.error("mark not supported")
     }
   }
@@ -429,9 +424,9 @@ final class MsgInBuffer(buf: ByteArrayInputStream) extends MsgUnpacker{
   override def unpackBinary(): Array[Byte] = {
     val b = readByte()
     val len: Int =
-      if(Code.isFixedRaw(b)){
+      if (Code.isFixedRaw(b)) {
         0x1f & b
-      }else {
+      } else {
         b match {
           case Code.BIN8 =>
             readNextLength8()
@@ -468,9 +463,9 @@ final class MsgInBuffer(buf: ByteArrayInputStream) extends MsgUnpacker{
   override def unpackString(): String = {
     val b = readByte()
     val len: Int =
-      if(Code.isFixStr(b)){
+      if (Code.isFixStr(b)) {
         0x1f & b
-      }else {
+      } else {
         b match {
           case Code.STR8 =>
             readNextLength8()

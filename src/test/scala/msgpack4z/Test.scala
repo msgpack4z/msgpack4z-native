@@ -101,19 +101,19 @@ object Test extends Scalaprops {
     def isSurrogate(c: Char): Boolean =
       (Character.MIN_SURROGATE <= c) && (c <= Character.MAX_SURROGATE)
 
-    Gen.arrayOfN(300, Gen.genCharAll).map{ s =>
+    Gen.arrayOfN(300, Gen.genCharAll).map { s =>
       val b = new java.lang.StringBuilder
       var i = 0
-      while(i < s.length){
+      while (i < s.length) {
         val c = s(i)
-        if(!isSurrogate(c)){
+        if (!isSurrogate(c)) {
           b.append(c)
           i += 1
-        }else if((i + 1 < s.length) && Character.isSurrogatePair(c, s(i + 1))){
+        } else if ((i + 1 < s.length) && Character.isSurrogatePair(c, s(i + 1))) {
           b.append(c)
           b.append(s(i + 1))
           i += 2
-        }else{
+        } else {
           i += 1
         }
       }
@@ -121,7 +121,7 @@ object Test extends Scalaprops {
     }
   }
 
-  val string = forAllG(unicodeStringGen){ a =>
+  val string = forAllG(unicodeStringGen) { a =>
     val out = MsgOutBuffer.create()
     out.packString(a)
     val bytes = out.result()

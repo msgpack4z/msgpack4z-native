@@ -1,8 +1,8 @@
 package msgpack4z
 
-final class OptInt private(private val value: Long) extends AnyVal {
+final class OptInt private (private val value: Long) extends AnyVal {
   def get: Int = {
-    if(isEmpty) sys.error("OptInt.Empty")
+    if (isEmpty) sys.error("OptInt.Empty")
     else value.asInstanceOf[Int]
   }
 
