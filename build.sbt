@@ -3,6 +3,8 @@ import sbtrelease._
 import ReleaseStateTransformations._
 import sbtcrossproject.crossProject
 
+Global / onChangedBuildSource := ReloadOnSourceChanges
+
 val tagName = Def.setting {
   s"v${if (releaseUseGlobalVersion.value) (version in ThisBuild).value else version.value}"
 }
