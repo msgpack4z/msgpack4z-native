@@ -28,12 +28,7 @@ lazy val commonSettings = Def.settings(
   name := msgpack4zNativeName,
   crossScalaVersions := Scala211 :: "2.12.10" :: "2.13.1" :: Nil,
   commands += Command.command("updateReadme")(UpdateReadme.updateReadmeTask),
-  publishTo := Some(
-    if (isSnapshot.value)
-      Opts.resolver.sonatypeSnapshots
-    else
-      Opts.resolver.sonatypeStaging
-  ),
+  publishTo := sonatypePublishToBundle.value,
   fullResolvers ~= { _.filterNot(_.name == "jcenter") },
   javacOptions in compile ++= Seq("-target", "6", "-source", "6"),
   releaseTagName := tagName.value,
@@ -55,9 +50,9 @@ lazy val commonSettings = Def.settings(
     ),
     SetScala211,
     releaseStepCommand("msgpack4zNativeNative/publishSigned"),
+    releaseStepCommandAndRemaining("sonatypeBundleRelease"),
     setNextVersion,
     commitNextVersion,
-    releaseStepCommand("sonatypeReleaseAll"),
     UpdateReadme.updateReadmeProcess,
     pushChanges
   ),
