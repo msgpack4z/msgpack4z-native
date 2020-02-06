@@ -9,7 +9,7 @@
 - <https://github.com/msgpack/msgpack/blob/master/spec.md>
 
 ```scala
-libraryDependencies += "com.github.xuwei-k" %% "msgpack4z-native" % "0.3.5"
+libraryDependencies += "com.github.xuwei-k" %% "msgpack4z-native" % "0.3.6"
 ```
 
-- [sxr](https://oss.sonatype.org/service/local/repositories/releases/archive/com/github/xuwei-k/msgpack4z-native_2.11/0.3.5/msgpack4z-native_2.11-0.3.5-sxr.jar/!/index.html)
+- [sxr](https://oss.sonatype.org/service/local/repositories/releases/archive/com/github/xuwei-k/msgpack4z-native_2.11/0.3.6/msgpack4z-native_2.11-0.3.6-sxr.jar/!/index.html)
