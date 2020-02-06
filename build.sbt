@@ -146,7 +146,7 @@ lazy val msgpack4zNative = crossProject(
     }
   )
   .jsSettings(
-    scalaJSSemantics ~= { _.withStrictFloats(true) },
+    scalaJSLinkerConfig ~= { _.withSemantics(_.withStrictFloats(true)) },
     scalacOptions += {
       val a = (baseDirectory in LocalRootProject).value.toURI.toString
       val g = "https://raw.githubusercontent.com/msgpack4z/msgpack4z-native/" + tagOrHash.value
