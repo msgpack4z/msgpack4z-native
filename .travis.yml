@@ -4,7 +4,7 @@ sudo: false
 
 scala:
 - 2.11.12
-- 2.12.10
+- 2.12.11
 - 2.13.1
 
 jdk:
@@ -28,7 +28,7 @@ before_cache:
 
 matrix:
   include:
-    - scala: 2.12.10
+    - scala: 2.12.11
       jdk: openjdk11
     - scala: 0.21.0-RC1
       script:
