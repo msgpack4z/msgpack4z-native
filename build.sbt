@@ -3,7 +3,7 @@ import sbtrelease._
 import ReleaseStateTransformations._
 import sbtcrossproject.crossProject
 
-val DottyVersion = "0.21.0-RC1"
+val DottyVersion = "0.23.0-RC1"
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
 
@@ -137,7 +137,7 @@ lazy val msgpack4zNative = crossProject(
     commonSettings,
     scalapropsCoreSettings,
     libraryDependencies ++= Seq(
-      "com.github.scalaprops" %%% "scalaprops" % "0.6.3" % "test",
+      "com.github.scalaprops" %%% "scalaprops" % "0.8.0" % "test",
     )
   )
   .jvmSettings(
