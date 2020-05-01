@@ -5,10 +5,11 @@ import scalaprops.Property.forAll
 
 object OptSpec extends Scalaprops {
 
-  override def param = super.param.copy(
-    minSuccessful = 1000,
-    maxSize = 300
-  )
+  override def param =
+    super.param.copy(
+      minSuccessful = 1000,
+      maxSize = 300
+    )
 
   val optBool = forAll { (a: Boolean) =>
     val b = OptBool(a)
