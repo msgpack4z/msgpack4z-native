@@ -7,10 +7,11 @@ import scalaprops.Property.{forAll, forAllG}
 
 object Test extends Scalaprops {
 
-  override def param = super.param.copy(
-    minSuccessful = 1000,
-    maxSize = 300
-  )
+  override def param =
+    super.param.copy(
+      minSuccessful = 1000,
+      maxSize = 300
+    )
 
   val ExtTypeHeader = forAll { (tpe: Byte, size: Int) =>
     val out = MsgOutBuffer.create()

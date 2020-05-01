@@ -11,8 +11,8 @@ final class MsgOutBuffer private (buf: ByteArrayOutputStream) extends MsgPacker 
 
   private[msgpack4z] def writeByteAndShort(b: Byte, sh: Short): Unit = {
     buf.write(b)
-    buf.write((sh >>> 8) & 0xFF)
-    buf.write((sh >>> 0) & 0xFF)
+    buf.write((sh >>> 8) & 0xff)
+    buf.write((sh >>> 0) & 0xff)
   }
 
   private[this] def writeByteAndByte(b: Byte, b1: Byte): Unit = {

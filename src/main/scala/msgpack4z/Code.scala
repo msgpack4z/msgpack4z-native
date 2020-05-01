@@ -2,7 +2,7 @@ package msgpack4z
 
 object Code {
   def isFixInt(b: Byte): Boolean = {
-    val v: Int = b & 0xFF
+    val v: Int = b & 0xff
     v <= 0x7f || v >= 0xe0
   }
 
@@ -79,7 +79,7 @@ object Code {
   private[this] val formatTable: Array[MsgType] = {
     val array = new Array[MsgType](0x100)
     var b = 0
-    while (b <= 0xFF) {
+    while (b <= 0xff) {
       array(b) = getType0(b.toByte)
       b += 1
     }
