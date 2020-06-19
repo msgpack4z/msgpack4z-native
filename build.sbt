@@ -181,12 +181,11 @@ lazy val root = Project(
   "root",
   file(".")
 ).settings(
-    commonSettings,
-    scalaSource in Compile := file("dummy"),
-    scalaSource in Test := file("dummy"),
-    noPublish
-  )
-  .aggregate(
-    msgpack4zNativeJVM,
-    msgpack4zNativeJS
-  )
+  commonSettings,
+  scalaSource in Compile := file("dummy"),
+  scalaSource in Test := file("dummy"),
+  noPublish
+).aggregate(
+  msgpack4zNativeJVM,
+  msgpack4zNativeJS
+)
