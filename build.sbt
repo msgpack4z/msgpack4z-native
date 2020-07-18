@@ -28,7 +28,7 @@ val SetScala211 = releaseStepCommand("++" + Scala211)
 lazy val commonSettings = Def.settings(
   ReleasePlugin.extraReleaseCommands,
   name := msgpack4zNativeName,
-  crossScalaVersions := Scala211 :: "2.12.11" :: "2.13.1" :: Nil,
+  crossScalaVersions := Scala211 :: "2.12.12" :: "2.13.3" :: Nil,
   commands += Command.command("updateReadme")(UpdateReadme.updateReadmeTask),
   publishTo := sonatypePublishToBundle.value,
   fullResolvers ~= { _.filterNot(_.name == "jcenter") },
