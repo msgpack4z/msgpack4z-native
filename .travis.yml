@@ -19,7 +19,7 @@ cache:
 script:
   - git config core.whitespace tab-in-indent,trailing-space,space-before-tab,cr-at-eol
   - git show --oneline --check
-  - wget https://raw.githubusercontent.com/paulp/sbt-extras/afc38460cbfb45db9318/sbt && chmod +x ./sbt
+  - wget https://raw.githubusercontent.com/paulp/sbt-extras/acb9803ff66ebdcf6ad7d08661398b35382ebab9/sbt && chmod +x ./sbt
   - ./sbt ++${TRAVIS_SCALA_VERSION} scalafmtCheck test:scalafmtCheck scalafmtSbtCheck update compile test:compile test publishLocal
 
 before_cache:
@@ -37,6 +37,6 @@ matrix:
       sudo: required
       before_install:
       - curl https://raw.githubusercontent.com/scala-native/scala-native/master/scripts/travis_setup.sh | bash -x
-      - wget https://raw.githubusercontent.com/paulp/sbt-extras/3ba0e52f32d32c0454ec3a926caae2db0caaca12/sbt && chmod +x ./sbt
+      - wget https://raw.githubusercontent.com/paulp/sbt-extras/acb9803ff66ebdcf6ad7d08661398b35382ebab9/sbt && chmod +x ./sbt
       script:
       - ./sbt ++$TRAVIS_SCALA_VERSION msgpack4zNativeNative/test
