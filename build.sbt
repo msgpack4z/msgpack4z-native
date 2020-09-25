@@ -72,9 +72,7 @@ lazy val commonSettings = Def.settings(
     "-deprecation",
     "-unchecked",
     "-Xlint",
-    "-language:existentials",
-    "-language:higherKinds",
-    "-language:implicitConversions",
+    "-language:existentials,higherKinds,implicitConversions",
   ) ++ unusedWarnings,
   scalacOptions ++= PartialFunction
     .condOpt(CrossVersion.partialVersion(scalaVersion.value)) {
@@ -153,10 +151,16 @@ lazy val msgpack4zNative = crossProject(
   )
   .jsSettings(
     scalaJSLinkerConfig ~= { _.withSemantics(_.withStrictFloats(true)) },
-    scalacOptions += {
+    scalacOptions ++= {
       val a = (baseDirectory in LocalRootProject).value.toURI.toString
       val g = "https://raw.githubusercontent.com/msgpack4z/msgpack4z-native/" + tagOrHash.value
-      s"-P:scalajs:mapSourceURI:$a->$g/"
+      if (isDottyJS.value) {
+        // TODO
+        // https://github.com/lampepfl/dotty/blob/4c99388e77be12ee6cc/compiler/src/dotty/tools/backend/sjs/JSPositions.scala#L64-L69
+        Nil
+      } else {
+        Seq(s"-P:scalajs:mapSourceURI:$a->$g/")
+      }
     }
   )
 

@@ -39,45 +39,45 @@ object Test extends Scalaprops {
     val out = MsgOutBuffer.create()
     out.packByte(a)
     val bytes = out.result()
-    assert(MsgInBuffer(bytes).unpackByte == a)
-    assert(MsgInBuffer(bytes).unpackShort == a)
-    assert(MsgInBuffer(bytes).unpackInt == a)
-    assert(MsgInBuffer(bytes).unpackLong == a)
-    MsgInBuffer(bytes).unpackBigInteger == BigInteger.valueOf(a)
+    assert(MsgInBuffer(bytes).unpackByte() == a)
+    assert(MsgInBuffer(bytes).unpackShort() == a)
+    assert(MsgInBuffer(bytes).unpackInt() == a)
+    assert(MsgInBuffer(bytes).unpackLong() == a)
+    MsgInBuffer(bytes).unpackBigInteger() == BigInteger.valueOf(a)
   }
 
   val short = forAll { (a: Short) =>
     val out = MsgOutBuffer.create()
     out.packShort(a)
     val bytes = out.result()
-    assert(MsgInBuffer(bytes).unpackShort == a)
-    assert(MsgInBuffer(bytes).unpackInt == a)
-    assert(MsgInBuffer(bytes).unpackLong == a)
-    MsgInBuffer(bytes).unpackBigInteger == BigInteger.valueOf(a)
+    assert(MsgInBuffer(bytes).unpackShort() == a)
+    assert(MsgInBuffer(bytes).unpackInt() == a)
+    assert(MsgInBuffer(bytes).unpackLong() == a)
+    MsgInBuffer(bytes).unpackBigInteger() == BigInteger.valueOf(a)
   }
 
   val int = forAll { (a: Int) =>
     val out = MsgOutBuffer.create()
     out.packInt(a)
     val bytes = out.result()
-    assert(MsgInBuffer(bytes).unpackInt == a)
-    assert(MsgInBuffer(bytes).unpackLong == a)
-    MsgInBuffer(bytes).unpackBigInteger == BigInteger.valueOf(a)
+    assert(MsgInBuffer(bytes).unpackInt() == a)
+    assert(MsgInBuffer(bytes).unpackLong() == a)
+    MsgInBuffer(bytes).unpackBigInteger() == BigInteger.valueOf(a)
   }
 
   val long = forAll { (a: Long) =>
     val out = MsgOutBuffer.create()
     out.packLong(a)
     val bytes = out.result()
-    assert(MsgInBuffer(bytes).unpackLong == a)
-    MsgInBuffer(bytes).unpackBigInteger == BigInteger.valueOf(a)
+    assert(MsgInBuffer(bytes).unpackLong() == a)
+    MsgInBuffer(bytes).unpackBigInteger() == BigInteger.valueOf(a)
   }
 
   val double = forAll { (a: Double) =>
     val out = MsgOutBuffer.create()
     out.packDouble(a)
     val bytes = out.result()
-    MsgInBuffer(bytes).unpackDouble match {
+    MsgInBuffer(bytes).unpackDouble() match {
       case f if f.isNaN => a.isNaN
       case f => f == a
     }
@@ -87,11 +87,11 @@ object Test extends Scalaprops {
     val out = MsgOutBuffer.create()
     out.packFloat(a)
     val bytes = out.result()
-    MsgInBuffer(bytes).unpackFloat match {
+    MsgInBuffer(bytes).unpackFloat() match {
       case f if f.isNaN => assert(a.isNaN)
       case f => f == a
     }
-    MsgInBuffer(bytes).unpackDouble match {
+    MsgInBuffer(bytes).unpackDouble() match {
       case f if f.isNaN => a.isNaN
       case f => f == a
     }
