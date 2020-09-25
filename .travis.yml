@@ -32,7 +32,14 @@ matrix:
       jdk: openjdk11
     - scala: 0.27.0-RC1
       script:
-       - sbt "++${TRAVIS_SCALA_VERSION}!" scalafmtCheck test:scalafmtCheck scalafmtSbtCheck msgpack4zNativeJVM/test msgpack4zNativeJVM/publishLocal
+       - sbt
+         "++${TRAVIS_SCALA_VERSION}!"
+         scalafmtCheckAll
+         scalafmtSbtCheck
+         msgpack4zNativeJVM/test
+         msgpack4zNativeJVM/publishLocal
+         msgpack4zNativeJS/test
+         msgpack4zNativeJS/publishLocal
     - scala: 2.11.12
       sudo: required
       before_install:
