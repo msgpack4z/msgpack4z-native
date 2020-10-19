@@ -30,10 +30,10 @@ matrix:
   include:
     - scala: 2.12.12
       jdk: openjdk11
-    - scala: 0.27.0-RC1
+    - scala: dotty
       script:
        - sbt
-         "++${TRAVIS_SCALA_VERSION}!"
+         SetDottyNightlyVersion
          scalafmtCheckAll
          scalafmtSbtCheck
          msgpack4zNativeJVM/test

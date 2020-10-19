@@ -3,8 +3,6 @@ import sbtrelease._
 import ReleaseStateTransformations._
 import sbtcrossproject.crossProject
 
-val DottyVersion = "0.27.0-RC1"
-
 Global / onChangedBuildSource := ReloadOnSourceChanges
 
 val tagName = Def.setting {
@@ -30,6 +28,9 @@ lazy val commonSettings = Def.settings(
   name := msgpack4zNativeName,
   crossScalaVersions := Scala211 :: "2.12.12" :: "2.13.3" :: Nil,
   commands += Command.command("updateReadme")(UpdateReadme.updateReadmeTask),
+  commands += Command.command("SetDottyNightlyVersion") {
+    s"""++ ${dottyLatestNightlyBuild.get}!""" :: _
+  },
   publishTo := sonatypePublishToBundle.value,
   fullResolvers ~= { _.filterNot(_.name == "jcenter") },
   javacOptions in compile ++= Seq("-target", "6", "-source", "6"),
@@ -52,8 +53,6 @@ lazy val commonSettings = Def.settings(
     ),
     SetScala211,
     releaseStepCommand("msgpack4zNativeNative/publishSigned"),
-    releaseStepCommand("++" + DottyVersion + "!"),
-    releaseStepCommand("msgpack4zNativeJVM/publishSigned"),
     releaseStepCommandAndRemaining("sonatypeBundleRelease"),
     setNextVersion,
     commitNextVersion,
