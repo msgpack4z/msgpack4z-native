@@ -26,21 +26,21 @@ jobs:
     - run:  |
         case ${{ matrix.name }} in
           "jvm-js")
-            sbt -v
-            scalafmtCheckAll
-            scalafmtSbtCheck
-            "+ test:compile"
-            "+ test"
+            sbt -v \
+            scalafmtCheckAll \
+            scalafmtSbtCheck \
+            "+ test:compile" \
+            "+ test" \
             "+ publishLocal"
             ;;
           "scala-3-nightly")
-            sbt -v
-            SetDottyNightlyVersion
-            scalafmtCheckAll
-            scalafmtSbtCheck
-            msgpack4zNativeJVM/test
-            msgpack4zNativeJVM/publishLocal
-            msgpack4zNativeJS/test
+            sbt -v \
+            SetDottyNightlyVersion \
+            scalafmtCheckAll \
+            scalafmtSbtCheck \
+            msgpack4zNativeJVM/test \
+            msgpack4zNativeJVM/publishLocal \
+            msgpack4zNativeJS/test \
             msgpack4zNativeJS/publishLocal
             ;;
           "scala-native")
