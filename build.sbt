@@ -26,7 +26,7 @@ val SetScala211 = releaseStepCommand("++" + Scala211)
 lazy val commonSettings = Def.settings(
   ReleasePlugin.extraReleaseCommands,
   name := msgpack4zNativeName,
-  crossScalaVersions := Scala211 :: "2.12.12" :: "2.13.3" :: Nil,
+  crossScalaVersions := Scala211 :: "2.12.12" :: "2.13.4" :: Nil,
   commands += Command.command("updateReadme")(UpdateReadme.updateReadmeTask),
   commands += Command.command("SetDottyNightlyVersion") {
     s"""++ ${dottyLatestNightlyBuild.get}!""" :: _
