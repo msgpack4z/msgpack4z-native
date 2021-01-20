@@ -85,15 +85,16 @@ lazy val commonSettings = Def.settings(
     .flatten,
   scalacOptions in (Compile, doc) ++= {
     val tag = tagOrHash.value
-    if (isDotty.value) {
-      Nil
-    } else {
-      Seq(
-        "-sourcepath",
-        (baseDirectory in LocalRootProject).value.getAbsolutePath,
-        "-doc-source-url",
-        s"https://github.com/msgpack4z/msgpack4z-native/tree/${tag}€{FILE_PATH}.scala"
-      )
+    CrossVersion.partialVersion(scalaVersion.value) match {
+      case Some((3, _)) =>
+        Nil
+      case _ =>
+        Seq(
+          "-sourcepath",
+          (baseDirectory in LocalRootProject).value.getAbsolutePath,
+          "-doc-source-url",
+          s"https://github.com/msgpack4z/msgpack4z-native/tree/${tag}€{FILE_PATH}.scala"
+        )
     }
   },
   scalaVersion := Scala211,
@@ -153,12 +154,12 @@ lazy val msgpack4zNative = crossProject(
     scalacOptions ++= {
       val a = (baseDirectory in LocalRootProject).value.toURI.toString
       val g = "https://raw.githubusercontent.com/msgpack4z/msgpack4z-native/" + tagOrHash.value
-      if (isDottyJS.value) {
-        // TODO
-        // https://github.com/lampepfl/dotty/blob/4c99388e77be12ee6cc/compiler/src/dotty/tools/backend/sjs/JSPositions.scala#L64-L69
-        Nil
-      } else {
-        Seq(s"-P:scalajs:mapSourceURI:$a->$g/")
+
+      CrossVersion.partialVersion(scalaVersion.value) match {
+        case Some((3, _)) =>
+          Seq(s"-scalajs-mapSourceURI:$a->$g/")
+        case _ =>
+          Seq(s"-P:scalajs:mapSourceURI:$a->$g/")
       }
     }
   )
