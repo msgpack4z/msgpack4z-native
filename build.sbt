@@ -50,7 +50,7 @@ lazy val commonSettings = Def.settings(
       },
       enableCrossBuild = true
     ),
-    releaseStepCommand("+ msgpack4zNativeNative/publishSigned"),
+    releaseStepCommandAndRemaining("+ msgpack4zNativeNative/publishSigned"),
     releaseStepCommandAndRemaining("sonatypeBundleRelease"),
     setNextVersion,
     commitNextVersion,
