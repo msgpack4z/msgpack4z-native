@@ -21,8 +21,6 @@ val unusedWarnings = Seq(
 
 val Scala211 = "2.11.12"
 
-val SetScala211 = releaseStepCommand("++" + Scala211)
-
 lazy val commonSettings = Def.settings(
   ReleasePlugin.extraReleaseCommands,
   name := msgpack4zNativeName,
@@ -51,8 +49,6 @@ lazy val commonSettings = Def.settings(
       },
       enableCrossBuild = true
     ),
-    SetScala211,
-    releaseStepCommand("msgpack4zNativeNative/publishSigned"),
     releaseStepCommandAndRemaining("sonatypeBundleRelease"),
     setNextVersion,
     commitNextVersion,
@@ -180,15 +176,7 @@ lazy val noPublish = Seq(
   publish := {}
 )
 
-lazy val root = Project(
-  "root",
-  file(".")
-).settings(
-  commonSettings,
-  scalaSource in Compile := file("dummy"),
-  scalaSource in Test := file("dummy"),
-  noPublish
-).aggregate(
-  msgpack4zNativeJVM,
-  msgpack4zNativeJS
-)
+commonSettings
+scalaSource in Compile := file("dummy")
+scalaSource in Test := file("dummy")
+noPublish
