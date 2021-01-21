@@ -20,11 +20,12 @@ val unusedWarnings = Seq(
 )
 
 val Scala211 = "2.11.12"
+val Scala3_0 = "3.0.0-M3"
 
 lazy val commonSettings = Def.settings(
   ReleasePlugin.extraReleaseCommands,
   name := msgpack4zNativeName,
-  crossScalaVersions := Scala211 :: "2.12.13" :: "2.13.4" :: Nil,
+  crossScalaVersions := Scala211 :: "2.12.13" :: "2.13.4" :: Scala3_0 :: Nil,
   commands += Command.command("updateReadme")(UpdateReadme.updateReadmeTask),
   commands += Command.command("SetDottyNightlyVersion") {
     s"""++ ${dottyLatestNightlyBuild.get}!""" :: _
@@ -49,6 +50,7 @@ lazy val commonSettings = Def.settings(
       },
       enableCrossBuild = true
     ),
+    releaseStepCommand("+ msgpack4zNativeNative/publishSigned"),
     releaseStepCommandAndRemaining("sonatypeBundleRelease"),
     setNextVersion,
     commitNextVersion,
@@ -165,7 +167,8 @@ lazy val msgpack4zNativeJVM = msgpack4zNative.jvm
 lazy val msgpack4zNativeJS = msgpack4zNative.js
 
 lazy val msgpack4zNativeNative = msgpack4zNative.native.settings(
-  scalapropsNativeSettings
+  scalapropsNativeSettings,
+  crossScalaVersions -= Scala3_0,
 )
 
 lazy val noPublish = Seq(
@@ -176,7 +179,15 @@ lazy val noPublish = Seq(
   publish := {}
 )
 
-commonSettings
-scalaSource in Compile := file("dummy")
-scalaSource in Test := file("dummy")
-noPublish
+lazy val root = Project(
+  "root",
+  file(".")
+).settings(
+  commonSettings,
+  scalaSource in Compile := file("dummy"),
+  scalaSource in Test := file("dummy"),
+  noPublish
+).aggregate(
+  msgpack4zNativeJVM,
+  msgpack4zNativeJS
+)
