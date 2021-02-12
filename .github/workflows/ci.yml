@@ -39,9 +39,7 @@ jobs:
             scalafmtCheckAll \
             scalafmtSbtCheck \
             msgpack4zNativeJVM/test \
-            msgpack4zNativeJVM/publishLocal \
-            msgpack4zNativeJS/test \
-            msgpack4zNativeJS/publishLocal
+            msgpack4zNativeJS/test
             ;;
           "scala-native")
             sbt -v "+ msgpack4zNativeNative/test"
