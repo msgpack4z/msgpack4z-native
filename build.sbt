@@ -25,7 +25,7 @@ val Scala3_0 = "3.0.0-RC1"
 lazy val commonSettings = Def.settings(
   ReleasePlugin.extraReleaseCommands,
   name := msgpack4zNativeName,
-  crossScalaVersions := Scala211 :: "2.12.13" :: "2.13.4" :: Scala3_0 :: Nil,
+  crossScalaVersions := Scala211 :: "2.12.13" :: "2.13.5" :: Scala3_0 :: Nil,
   commands += Command.command("updateReadme")(UpdateReadme.updateReadmeTask),
   commands += Command.command("SetDottyNightlyVersion") {
     s"""++ ${dottyLatestNightlyBuild.get}!""" :: _
