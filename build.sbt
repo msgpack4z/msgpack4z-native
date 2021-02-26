@@ -6,7 +6,7 @@ import sbtcrossproject.crossProject
 Global / onChangedBuildSource := ReloadOnSourceChanges
 
 val tagName = Def.setting {
-  s"v${if (releaseUseGlobalVersion.value) (version in ThisBuild).value else version.value}"
+  s"v${if (releaseUseGlobalVersion.value) (ThisBuild / version).value else version.value}"
 }
 
 val tagOrHash = Def.setting {
@@ -32,7 +32,7 @@ lazy val commonSettings = Def.settings(
   },
   publishTo := sonatypePublishToBundle.value,
   fullResolvers ~= { _.filterNot(_.name == "jcenter") },
-  javacOptions in compile ++= Seq("-target", "6", "-source", "6"),
+  compile / javacOptions ++= Seq("-target", "6", "-source", "6"),
   releaseTagName := tagName.value,
   releaseProcess := Seq[ReleaseStep](
     checkSnapshotDependencies,
@@ -46,7 +46,7 @@ lazy val commonSettings = Def.settings(
     ReleaseStep(
       action = { state =>
         val extracted = Project extract state
-        extracted.runAggregated(PgpKeys.publishSigned in Global in extracted.get(thisProjectRef), state)
+        extracted.runAggregated(extracted.get(thisProjectRef) / (Global / PgpKeys.publishSigned), state)
       },
       enableCrossBuild = true
     ),
@@ -81,7 +81,7 @@ lazy val commonSettings = Def.settings(
     }
     .toList
     .flatten,
-  scalacOptions in (Compile, doc) ++= {
+  (Compile / doc / scalacOptions) ++= {
     val tag = tagOrHash.value
     CrossVersion.partialVersion(scalaVersion.value) match {
       case Some((3, _)) =>
@@ -89,7 +89,7 @@ lazy val commonSettings = Def.settings(
       case _ =>
         Seq(
           "-sourcepath",
-          (baseDirectory in LocalRootProject).value.getAbsolutePath,
+          (LocalRootProject / baseDirectory).value.getAbsolutePath,
           "-doc-source-url",
           s"https://github.com/msgpack4z/msgpack4z-native/tree/${tag}€{FILE_PATH}.scala"
         )
@@ -121,7 +121,7 @@ lazy val commonSettings = Def.settings(
     val stripTestScope = stripIf { n => n.label == "dependency" && (n \ "scope").text == "test" }
     new RuleTransformer(stripTestScope).transform(node)(0)
   }
-) ++ Seq(Compile, Test).flatMap(c => scalacOptions in (c, console) ~= { _.filterNot(unusedWarnings.toSet) })
+) ++ Seq(Compile, Test).flatMap(c => c / console / scalacOptions ~= { _.filterNot(unusedWarnings.toSet) })
 
 lazy val msgpack4zNative = crossProject(
   JSPlatform,
@@ -143,14 +143,14 @@ lazy val msgpack4zNative = crossProject(
     )
   )
   .platformsSettings(NativePlatform, JSPlatform)(
-    unmanagedSourceDirectories in Compile += {
+    (Compile / unmanagedSourceDirectories) += {
       baseDirectory.value.getParentFile / "js_native/src/main/scala/"
     }
   )
   .jsSettings(
     scalaJSLinkerConfig ~= { _.withSemantics(_.withStrictFloats(true)) },
     scalacOptions ++= {
-      val a = (baseDirectory in LocalRootProject).value.toURI.toString
+      val a = (LocalRootProject / baseDirectory).value.toURI.toString
       val g = "https://raw.githubusercontent.com/msgpack4z/msgpack4z-native/" + tagOrHash.value
 
       CrossVersion.partialVersion(scalaVersion.value) match {
@@ -175,7 +175,7 @@ lazy val noPublish = Seq(
   PgpKeys.publishSigned := {},
   PgpKeys.publishLocalSigned := {},
   publishLocal := {},
-  publishArtifact in Compile := false,
+  Compile / publishArtifact := false,
   publish := {}
 )
 
@@ -184,8 +184,8 @@ lazy val root = Project(
   file(".")
 ).settings(
   commonSettings,
-  scalaSource in Compile := file("dummy"),
-  scalaSource in Test := file("dummy"),
+  Compile / scalaSource := file("dummy"),
+  Test / scalaSource := file("dummy"),
   noPublish
 ).aggregate(
   msgpack4zNativeJVM,
