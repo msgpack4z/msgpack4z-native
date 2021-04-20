@@ -14,7 +14,6 @@ jobs:
         include:
           - name: jvm-js
           - name: scala-native
-          - name: scala-3-nightly
     steps:
     - uses: actions/checkout@v2.3.4
     - uses: olafurpg/setup-scala@v10
@@ -32,14 +31,6 @@ jobs:
             "+ test:compile" \
             "+ test" \
             "+ publishLocal"
-            ;;
-          "scala-3-nightly")
-            sbt -v \
-            SetDottyNightlyVersion \
-            scalafmtCheckAll \
-            scalafmtSbtCheck \
-            msgpack4zNativeJVM/test \
-            msgpack4zNativeJS/test
             ;;
           "scala-native")
             sbt -v "+ msgpack4zNativeNative/test"
