@@ -181,8 +181,8 @@ lazy val root = Project(
   file(".")
 ).settings(
   commonSettings,
-  Compile / scalaSource := file("dummy"),
-  Test / scalaSource := file("dummy"),
+  Compile / scalaSource := baseDirectory.value / "dummy",
+  Test / scalaSource := baseDirectory.value / "dummy",
   noPublish
 ).aggregate(
   msgpack4zNativeJVM,
