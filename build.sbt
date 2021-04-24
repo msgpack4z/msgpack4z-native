@@ -27,9 +27,6 @@ lazy val commonSettings = Def.settings(
   name := msgpack4zNativeName,
   crossScalaVersions := Scala211 :: "2.12.13" :: "2.13.5" :: Scala3_0 :: Nil,
   commands += Command.command("updateReadme")(UpdateReadme.updateReadmeTask),
-  commands += Command.command("SetDottyNightlyVersion") {
-    s"""++ ${dottyLatestNightlyBuild.get}!""" :: _
-  },
   publishTo := sonatypePublishToBundle.value,
   fullResolvers ~= { _.filterNot(_.name == "jcenter") },
   compile / javacOptions ++= Seq("-target", "6", "-source", "6"),
@@ -133,7 +130,7 @@ lazy val msgpack4zNative = crossProject(
     commonSettings,
     scalapropsCoreSettings,
     libraryDependencies ++= Seq(
-      "com.github.scalaprops" %%% "scalaprops" % "0.8.2" % "test" withDottyCompat scalaVersion.value,
+      "com.github.scalaprops" %%% "scalaprops" % "0.8.2" % "test" cross CrossVersion.for3Use2_13,
     )
   )
   .jvmSettings(
