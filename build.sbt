@@ -130,7 +130,7 @@ lazy val msgpack4zNative = crossProject(
     commonSettings,
     scalapropsCoreSettings,
     libraryDependencies ++= Seq(
-      "com.github.scalaprops" %%% "scalaprops" % "0.8.2" % "test" cross CrossVersion.for3Use2_13,
+      "com.github.scalaprops" %%% "scalaprops" % "0.8.3" % "test" cross CrossVersion.for3Use2_13,
     )
   )
   .jvmSettings(
