@@ -134,7 +134,6 @@ lazy val msgpack4zNative = crossProject(
     )
   )
   .jvmSettings(
-    Sxr.settings,
     libraryDependencies ++= Seq(
       "com.github.xuwei-k" % "msgpack4z-api" % "0.2.0",
     )
