@@ -28,7 +28,7 @@ jobs:
             sbt -v \
             scalafmtCheckAll \
             scalafmtSbtCheck \
-            "+ test:compile" \
+            "+ Test/compile" \
             "+ test" \
             "+ publishLocal"
             ;;
