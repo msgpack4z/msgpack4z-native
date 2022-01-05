@@ -164,7 +164,6 @@ lazy val msgpack4zNativeJS = msgpack4zNative.js
 
 lazy val msgpack4zNativeNative = msgpack4zNative.native.settings(
   scalapropsNativeSettings,
-  crossScalaVersions -= Scala3,
 )
 
 lazy val noPublish = Seq(
