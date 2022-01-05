@@ -164,6 +164,15 @@ lazy val msgpack4zNativeJS = msgpack4zNative.js
 
 lazy val msgpack4zNativeNative = msgpack4zNative.native.settings(
   scalapropsNativeSettings,
+  Compile / doc / scalacOptions --= {
+    // TODO remove this workaround
+    // https://github.com/scala-native/scala-native/issues/2503
+    if (scalaBinaryVersion.value == "3") {
+      (Compile / doc / scalacOptions).value.filter(_.contains("-Xplugin"))
+    } else {
+      Nil
+    }
+  },
 )
 
 lazy val noPublish = Seq(
