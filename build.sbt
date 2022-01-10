@@ -25,7 +25,7 @@ val Scala3 = "3.1.0"
 lazy val commonSettings = Def.settings(
   ReleasePlugin.extraReleaseCommands,
   name := msgpack4zNativeName,
-  crossScalaVersions := Scala211 :: "2.12.15" :: "2.13.7" :: Scala3 :: Nil,
+  crossScalaVersions := Scala211 :: "2.12.15" :: "2.13.8" :: Scala3 :: Nil,
   commands += Command.command("updateReadme")(UpdateReadme.updateReadmeTask),
   publishTo := sonatypePublishToBundle.value,
   fullResolvers ~= { _.filterNot(_.name == "jcenter") },
