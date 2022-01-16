@@ -1,7 +1,6 @@
 import build._
 import sbtrelease._
 import ReleaseStateTransformations._
-import sbtcrossproject.crossProject
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
 
