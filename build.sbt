@@ -18,7 +18,7 @@ val unusedWarnings = Seq(
   "-Ywarn-unused",
 )
 
-val Scala212 = "2.12.17"
+val Scala212 = "2.12.18"
 val Scala3 = "3.3.0"
 
 lazy val commonSettings = Def.settings(
