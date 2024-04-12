@@ -8,5 +8,5 @@
 - <https://github.com/msgpack/msgpack/blob/master/spec.md>
 
 ```scala
-libraryDependencies += "com.github.xuwei-k" %% "msgpack4z-native" % "0.3.9"
+libraryDependencies += "com.github.xuwei-k" %% "msgpack4z-native" % "0.4.0"
 ```
