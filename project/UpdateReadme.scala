@@ -9,11 +9,11 @@ object UpdateReadme {
 
   val updateReadmeTask = { (state: State) =>
     val extracted = Project.extract(state)
-    val scalaV = extracted get scalaBinaryVersion
-    val v = extracted get version
-    val org = extracted get organization
+    val scalaV = extracted.get(scalaBinaryVersion)
+    val v = extracted.get(version)
+    val org = extracted.get(organization)
     val modules = build.modules
-    val snapshotOrRelease = if (extracted get isSnapshot) "snapshots" else "releases"
+    val snapshotOrRelease = if (extracted.get(isSnapshot)) "snapshots" else "releases"
     val readme = "README.md"
     val readmeFile = file(readme)
     val newReadme = Predef
@@ -28,7 +28,7 @@ object UpdateReadme {
       }
       .mkString("", "\n", "\n")
     IO.write(readmeFile, newReadme)
-    val git = new Git(extracted get baseDirectory)
+    val git = new Git(extracted.get(baseDirectory))
     val logger = new scala.sys.process.ProcessLogger {
       def buffer[T](f: => T): T = f
       def err(s: => String): Unit = state.log.error(s)
