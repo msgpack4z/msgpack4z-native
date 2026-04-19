@@ -30,10 +30,11 @@ val unusedWarnings = Def.setting(
 val Scala212 = "2.12.21"
 val Scala3 = "3.3.7"
 
+val scalaVersions = Scala212 :: "2.13.18" :: Scala3 :: Nil
+
 lazy val commonSettings = Def.settings(
   ReleasePlugin.extraReleaseCommands,
   name := msgpack4zNativeName,
-  crossScalaVersions := Scala212 :: "2.13.18" :: Scala3 :: Nil,
   commands += Command.command("updateReadme")(UpdateReadme.updateReadmeTask),
   publishTo := sonatypePublishToBundle.value,
   fullResolvers ~= { _.filterNot(_.name == "jcenter") },
@@ -53,9 +54,8 @@ lazy val commonSettings = Def.settings(
         val extracted = Project extract state
         extracted.runAggregated(extracted.get(thisProjectRef) / (Global / PgpKeys.publishSigned), state)
       },
-      enableCrossBuild = true
+      enableCrossBuild = false
     ),
-    releaseStepCommandAndRemaining("+ msgpack4zNativeNative/publishSigned"),
     releaseStepCommandAndRemaining("sonatypeBundleRelease"),
     setNextVersion,
     commitNextVersion,
@@ -109,7 +109,6 @@ lazy val commonSettings = Def.settings(
         )
     }
   },
-  scalaVersion := Scala212,
   pomExtra :=
     <developers>
       <developer>
@@ -141,12 +140,15 @@ lazy val commonSettings = Def.settings(
   }
 )
 
-lazy val msgpack4zNative = crossProject(
-  JSPlatform,
-  JVMPlatform,
-  NativePlatform
-).crossType(CustomCrossType)
+val jsNativeSettings = Def.settings(
+  (Compile / unmanagedSourceDirectories) += {
+    (projectMatrixBaseDirectory.value / "js_native/src/main/scala/").getAbsoluteFile
+  }
+)
+
+lazy val msgpack4zNative = projectMatrix
   .in(file("."))
+  .defaultAxes()
   .settings(
     commonSettings,
     scalapropsCoreSettings,
@@ -154,37 +156,36 @@ lazy val msgpack4zNative = crossProject(
       "com.github.scalaprops" %%% "scalaprops" % "0.10.1" % "test",
     )
   )
-  .jvmSettings(
+  .jvmPlatform(
+    scalaVersions,
     libraryDependencies ++= Seq(
       "com.github.xuwei-k" % "msgpack4z-api" % "0.2.0",
     )
   )
-  .platformsSettings(NativePlatform, JSPlatform)(
-    (Compile / unmanagedSourceDirectories) += {
-      baseDirectory.value.getParentFile / "js_native/src/main/scala/"
-    }
+  .jsPlatform(
+    scalaVersions,
+    Def.settings(
+      jsNativeSettings,
+      scalacOptions ++= {
+        val a = (LocalRootProject / baseDirectory).value.toURI.toString
+        val g = "https://raw.githubusercontent.com/msgpack4z/msgpack4z-native/" + tagOrHash.value
+
+        CrossVersion.partialVersion(scalaVersion.value) match {
+          case Some((3, _)) =>
+            Seq(s"-scalajs-mapSourceURI:$a->$g/")
+          case _ =>
+            Seq(s"-P:scalajs:mapSourceURI:$a->$g/")
+        }
+      },
+    )
   )
-  .jsSettings(
-    scalacOptions ++= {
-      val a = (LocalRootProject / baseDirectory).value.toURI.toString
-      val g = "https://raw.githubusercontent.com/msgpack4z/msgpack4z-native/" + tagOrHash.value
-
-      CrossVersion.partialVersion(scalaVersion.value) match {
-        case Some((3, _)) =>
-          Seq(s"-scalajs-mapSourceURI:$a->$g/")
-        case _ =>
-          Seq(s"-P:scalajs:mapSourceURI:$a->$g/")
-      }
-    }
+  .nativePlatform(
+    scalaVersions,
+    Def.settings(
+      scalapropsNativeSettings,
+      jsNativeSettings,
+    )
   )
-
-lazy val msgpack4zNativeJVM = msgpack4zNative.jvm
-
-lazy val msgpack4zNativeJS = msgpack4zNative.js
-
-lazy val msgpack4zNativeNative = msgpack4zNative.native.settings(
-  scalapropsNativeSettings,
-)
 
 lazy val noPublish = Seq(
   PgpKeys.publishSigned := {},
@@ -194,15 +195,13 @@ lazy val noPublish = Seq(
   publish := {}
 )
 
-lazy val root = Project(
-  "root",
-  file(".")
-).settings(
-  commonSettings,
-  Compile / scalaSource := baseDirectory.value / "dummy",
-  Test / scalaSource := baseDirectory.value / "dummy",
-  noPublish
-).aggregate(
-  msgpack4zNativeJVM,
-  msgpack4zNativeJS
-)
+commonSettings
+Compile / scalaSource := baseDirectory.value / "dummy"
+Test / scalaSource := baseDirectory.value / "dummy"
+noPublish
+autoScalaLibrary := false
+TaskKey[Unit]("testSequential") := Def
+  .sequential(
+    msgpack4zNative.allProjects().map(_._1).sortBy(_.id).map(_ / Test / test)
+  )
+  .value
