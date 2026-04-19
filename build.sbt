@@ -36,7 +36,7 @@ lazy val commonSettings = Def.settings(
   ReleasePlugin.extraReleaseCommands,
   name := msgpack4zNativeName,
   commands += Command.command("updateReadme")(UpdateReadme.updateReadmeTask),
-  publishTo := sonatypePublishToBundle.value,
+  publishTo := (if (isSnapshot.value) None else localStaging.value),
   fullResolvers ~= { _.filterNot(_.name == "jcenter") },
   compile / javacOptions ++= Seq("-target", "6", "-source", "6"),
   releaseTagName := tagName.value,
@@ -56,7 +56,7 @@ lazy val commonSettings = Def.settings(
       },
       enableCrossBuild = false
     ),
-    releaseStepCommandAndRemaining("sonatypeBundleRelease"),
+    releaseStepCommandAndRemaining("sonaRelease"),
     setNextVersion,
     commitNextVersion,
     UpdateReadme.updateReadmeProcess,
