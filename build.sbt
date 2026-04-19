@@ -14,8 +14,17 @@ val tagOrHash = Def.setting {
 
 def gitHash(): String = sys.process.Process("git rev-parse HEAD").lineStream_!.head
 
-val unusedWarnings = Seq(
-  "-Ywarn-unused",
+val unusedWarnings = Def.setting(
+  scalaBinaryVersion.value match {
+    case "3" =>
+      Seq(
+        "-Wunused:all",
+      )
+    case _ =>
+      Seq(
+        "-Ywarn-unused",
+      )
+  }
 )
 
 val Scala212 = "2.12.21"
@@ -75,7 +84,7 @@ lazy val commonSettings = Def.settings(
     "-deprecation",
     "-unchecked",
     "-language:existentials,higherKinds,implicitConversions",
-  ) ++ unusedWarnings,
+  ) ++ unusedWarnings.value,
   scalacOptions ++= PartialFunction
     .condOpt(CrossVersion.partialVersion(scalaVersion.value)) {
       case Some((2, v)) if v <= 12 =>
@@ -126,7 +135,11 @@ lazy val commonSettings = Def.settings(
     val stripTestScope = stripIf { n => n.label == "dependency" && (n \ "scope").text == "test" }
     new RuleTransformer(stripTestScope).transform(node)(0)
   }
-) ++ Seq(Compile, Test).flatMap(c => c / console / scalacOptions ~= { _.filterNot(unusedWarnings.toSet) })
+) ++ Seq(Compile, Test).flatMap(c =>
+  c / console / scalacOptions := {
+    (c / console / scalacOptions).value.filterNot(unusedWarnings.value.toSet)
+  }
+)
 
 lazy val msgpack4zNative = crossProject(
   JSPlatform,
