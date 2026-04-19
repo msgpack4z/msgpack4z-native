@@ -61,10 +61,19 @@ lazy val commonSettings = Def.settings(
   organization := "com.github.xuwei-k",
   homepage := Some(url("https://github.com/msgpack4z")),
   licenses := Seq("MIT License" -> url("http://www.opensource.org/licenses/mit-license.php")),
+  scalacOptions ++= {
+    scalaBinaryVersion.value match {
+      case "3" =>
+        Nil
+      case _ =>
+        Seq(
+          "-Xlint",
+        )
+    }
+  },
   scalacOptions ++= Seq(
     "-deprecation",
     "-unchecked",
-    "-Xlint",
     "-language:existentials,higherKinds,implicitConversions",
   ) ++ unusedWarnings,
   scalacOptions ++= PartialFunction
