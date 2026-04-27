@@ -12,7 +12,7 @@ val tagOrHash = Def.setting {
   if (isSnapshot.value) gitHash() else tagName.value
 }
 
-def gitHash(): String = sys.process.Process("git rev-parse HEAD").lineStream_!.head
+def gitHash(): String = sys.process.Process("git rev-parse HEAD").lazyLines_!.head
 
 val unusedWarnings = Def.setting(
   scalaBinaryVersion.value match {
@@ -148,7 +148,7 @@ lazy val msgpack4zNative = projectMatrix
     commonSettings,
     scalapropsCoreSettings,
     libraryDependencies ++= Seq(
-      "com.github.scalaprops" %%% "scalaprops" % "0.10.1" % "test",
+      "com.github.scalaprops" %% "scalaprops" % "0.10.1" % "test",
     )
   )
   .jvmPlatform(
@@ -158,7 +158,7 @@ lazy val msgpack4zNative = projectMatrix
     )
   )
   .jsPlatform(
-    scalaVersions,
+    Nil,
     Def.settings(
       jsNativeSettings,
       scalacOptions ++= {
@@ -190,13 +190,17 @@ lazy val noPublish = Seq(
   publish := {}
 )
 
-commonSettings
-Compile / scalaSource := baseDirectory.value / "dummy"
-Test / scalaSource := baseDirectory.value / "dummy"
-noPublish
-autoScalaLibrary := false
-TaskKey[Unit]("testSequential") := Def
-  .sequential(
-    msgpack4zNative.allProjects().map(_._1).sortBy(_.id).map(_ / Test / test)
-  )
-  .value
+val root = rootProject.autoAggregate.settings(
+  commonSettings,
+  Compile / scalaSource := baseDirectory.value / "dummy",
+  Test / scalaSource := baseDirectory.value / "dummy",
+  noPublish,
+  autoScalaLibrary := false,
+  TaskKey[TestResult]("testSequential") := Def.uncached {
+    Def
+      .sequential(
+        msgpack4zNative.allProjects().map(_._1).sortBy(_.id).map(_ / Test / testFull)
+      )
+      .value
+  }
+)
