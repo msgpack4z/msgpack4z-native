@@ -28,7 +28,7 @@ val unusedWarnings = Def.setting(
 )
 
 val Scala212 = "2.12.21"
-val Scala3 = "3.3.7"
+val Scala3 = "3.3.8"
 
 val scalaVersions = Scala212 :: "2.13.18" :: Scala3 :: Nil
 
