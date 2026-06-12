@@ -153,8 +153,22 @@ lazy val msgpack4zNative = projectMatrix
   )
   .jvmPlatform(
     scalaVersions,
-    libraryDependencies ++= Seq(
-      "com.github.xuwei-k" % "msgpack4z-api" % "0.2.0",
+    Def.settings(
+      scalacOptions ++= {
+        if (scalaVersion.value.startsWith("3.3.")) {
+          Seq(
+            "-Yfuture-lazy-vals",
+            "-release:11",
+          )
+        } else {
+          Seq(
+            "-release:8",
+          )
+        }
+      },
+      libraryDependencies ++= Seq(
+        "com.github.xuwei-k" % "msgpack4z-api" % "0.2.0",
+      )
     )
   )
   .jsPlatform(
