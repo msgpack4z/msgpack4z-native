@@ -30,7 +30,7 @@ val unusedWarnings = Def.setting(
 val Scala212 = "2.12.21"
 val Scala3 = "3.3.8"
 
-val scalaVersions = Scala212 :: "2.13.18" :: Scala3 :: Nil
+val scalaVersions = Scala212 :: "3.9.0" :: Scala3 :: Nil
 
 lazy val commonSettings = Def.settings(
   ReleasePlugin.extraReleaseCommands,
