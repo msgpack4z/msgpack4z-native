@@ -13,7 +13,7 @@ object Test extends Scalaprops {
       maxSize = 300
     )
 
-  val ExtTypeHeader = forAll { (tpe: Byte, size: Int) =>
+  property("ExtTypeHeader") = forAll { (tpe: Byte, size: Int) =>
     val out = MsgOutBuffer.create()
     out.packExtTypeHeader(tpe, size)
     val bytes = out.result()
@@ -21,21 +21,21 @@ object Test extends Scalaprops {
     (header.getType == tpe) && (header.getLength == size)
   }
 
-  val MapHeader = forAll { (size: Int) =>
+  property("MapHeader") = forAll { (size: Int) =>
     val out = MsgOutBuffer.create()
     out.packMapHeader(size)
     val bytes = out.result()
     MsgInBuffer(bytes).unpackMapHeader() == size
   }
 
-  val ArrayHeader = forAll { (size: Int) =>
+  property("ArrayHeader") = forAll { (size: Int) =>
     val out = MsgOutBuffer.create()
     out.packArrayHeader(size)
     val bytes = out.result()
     MsgInBuffer(bytes).unpackArrayHeader() == size
   }
 
-  val byte = forAll { (a: Byte) =>
+  property("byte") = forAll { (a: Byte) =>
     val out = MsgOutBuffer.create()
     out.packByte(a)
     val bytes = out.result()
@@ -46,7 +46,7 @@ object Test extends Scalaprops {
     MsgInBuffer(bytes).unpackBigInteger() == BigInteger.valueOf(a)
   }
 
-  val short = forAll { (a: Short) =>
+  property("short") = forAll { (a: Short) =>
     val out = MsgOutBuffer.create()
     out.packShort(a)
     val bytes = out.result()
@@ -56,7 +56,7 @@ object Test extends Scalaprops {
     MsgInBuffer(bytes).unpackBigInteger() == BigInteger.valueOf(a)
   }
 
-  val int = forAll { (a: Int) =>
+  property("int") = forAll { (a: Int) =>
     val out = MsgOutBuffer.create()
     out.packInt(a)
     val bytes = out.result()
@@ -65,7 +65,7 @@ object Test extends Scalaprops {
     MsgInBuffer(bytes).unpackBigInteger() == BigInteger.valueOf(a)
   }
 
-  val long = forAll { (a: Long) =>
+  property("long") = forAll { (a: Long) =>
     val out = MsgOutBuffer.create()
     out.packLong(a)
     val bytes = out.result()
@@ -73,7 +73,7 @@ object Test extends Scalaprops {
     MsgInBuffer(bytes).unpackBigInteger() == BigInteger.valueOf(a)
   }
 
-  val double = forAll { (a: Double) =>
+  property("double") = forAll { (a: Double) =>
     val out = MsgOutBuffer.create()
     out.packDouble(a)
     val bytes = out.result()
@@ -83,7 +83,7 @@ object Test extends Scalaprops {
     }
   }
 
-  val float = forAll { (a: Float) =>
+  property("float") = forAll { (a: Float) =>
     val out = MsgOutBuffer.create()
     out.packFloat(a)
     val bytes = out.result()
@@ -122,35 +122,35 @@ object Test extends Scalaprops {
     }
   }
 
-  val string = forAllG(unicodeStringGen) { a =>
+  property("string") = forAllG(unicodeStringGen) { a =>
     val out = MsgOutBuffer.create()
     out.packString(a)
     val bytes = out.result()
     MsgInBuffer(bytes).unpackString() == a
   }.toProperties((), Param.minSuccessful(300))
 
-  val binary = forAll { (a: Array[Byte]) =>
+  property("binary") = forAll { (a: Array[Byte]) =>
     val out = MsgOutBuffer.create()
     out.packBinary(a)
     val bytes = out.result()
     java.util.Arrays.equals(MsgInBuffer(bytes).unpackBinary(), a)
   }.toProperties((), Param.minSuccessful(300))
 
-  val nil = forAll {
+  property("nil") = forAll {
     val out = MsgOutBuffer.create()
     out.packNil()
     val bytes = out.result()
     MsgInBuffer(bytes).unpackNilWithCheck()
   }
 
-  val `true` = forAll {
+  property("true") = forAll {
     val out = MsgOutBuffer.create()
     out.packBoolean(true)
     val bytes = out.result()
     MsgInBuffer(bytes).unpackBoolean()
   }
 
-  val `false` = forAll {
+  property("false") = forAll {
     val out = MsgOutBuffer.create()
     out.packBoolean(false)
     val bytes = out.result()

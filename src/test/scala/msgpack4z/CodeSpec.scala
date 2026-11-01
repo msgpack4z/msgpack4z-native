@@ -47,7 +47,7 @@ object CodeSpec extends Scalaprops {
     Code.isFixedMap
   ) ::: list.map(c => c == (_: Byte))
 
-  val `no duplicate` = Property.forAll {
+  property("no duplicate") = Property.forAll {
     assert(list.distinct.size == list.size)
     (Byte.MinValue to Byte.MaxValue).foreach { b =>
       val a = functions.map(_ apply b.toByte).partition(identity)._1

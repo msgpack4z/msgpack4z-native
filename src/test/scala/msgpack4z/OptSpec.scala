@@ -11,7 +11,7 @@ object OptSpec extends Scalaprops {
       maxSize = 300
     )
 
-  val optBool = forAll { (a: Boolean) =>
+  property("optBool") = forAll { (a: Boolean) =>
     val b = OptBool(a)
     assert(b.nonEmpty)
     assert(b.get == a)
@@ -31,7 +31,7 @@ object OptSpec extends Scalaprops {
     }
   }
 
-  val optByte = forAll { (a: Byte) =>
+  property("optByte") = forAll { (a: Byte) =>
     val b = OptByte(a)
     assert(b.nonEmpty)
     assert(b.get == a)
@@ -49,7 +49,7 @@ object OptSpec extends Scalaprops {
     }
   }
 
-  val optShort = forAll { (a: Short) =>
+  property("optShort") = forAll { (a: Short) =>
     val b = OptShort(a)
     assert(b.nonEmpty)
     assert(b.get == a)
@@ -67,7 +67,7 @@ object OptSpec extends Scalaprops {
     }
   }
 
-  val optInt = forAll { (a: Int) =>
+  property("optInt") = forAll { (a: Int) =>
     val b = OptInt(a)
     assert(b.nonEmpty)
     assert(b.get == a)
