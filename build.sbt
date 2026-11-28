@@ -148,7 +148,7 @@ lazy val msgpack4zNative = projectMatrix
     commonSettings,
     scalapropsCoreSettings,
     libraryDependencies ++= Seq(
-      "com.github.scalaprops" %% "scalaprops" % "0.12.0" % "test",
+      "com.github.scalaprops" %% "scalaprops" % "0.12.1" % "test",
     )
   )
   .jvmPlatform(
